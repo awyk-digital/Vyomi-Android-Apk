@@ -1,0 +1,2762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vyomi Club Management - Android App Prototype</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0B0B0C;
+      --surface-elevated: #171719;
+      --surface-card: #1F1F23;
+      --text-primary: #F5F5F2;
+      --text-secondary: #B8B8BF;
+      --border-color: #303034;
+      --ivory-primary: #F5F5F2;
+      --ivory-text: #0B0B0C;
+      --champagne-accent: #D4AF37;
+      --champagne-muted: #8E7835;
+      --champagne-light: #F4E8C1;
+      --status-success: #34D399;
+      --status-warning: #FBBF24;
+      --status-error: #F87171;
+    }
+    body {
+      background-color: #070708;
+      color: #F5F5F2;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    .brand-font {
+      font-family: 'Cinzel', serif;
+      letter-spacing: 0.25em;
+    }
+    /* Android Device Simulator Container */
+    .device-viewport {
+      width: 412px;
+      height: 890px;
+      background-color: #0B0B0C;
+      border: 10px solid #232327;
+      border-radius: 44px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+    .camera-punchhole {
+      width: 14px;
+      height: 14px;
+      background: #000000;
+      border-radius: 50%;
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      border: 1px solid #1a1a1c;
+    }
+    .nav-bar-pill {
+      width: 110px;
+      height: 4px;
+      background-color: #7A7A82;
+      border-radius: 2px;
+      margin: 8px auto 6px auto;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #303034;
+      border-radius: 4px;
+    }
+    .tap-highlight:active {
+      transform: scale(0.98);
+      filter: brightness(0.92);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#070708] text-[#F5F5F2] flex flex-col items-center py-6 px-4">
+
+  <!-- TOP APP CONTROLLER HEADER -->
+  <header class="w-full max-w-6xl mb-6 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-[#232327] pb-5">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-[#171719] border border-[#303034] flex items-center justify-center text-[#D4AF37] font-bold text-lg brand-font">
+        V
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-xl font-semibold tracking-wide text-[#F5F5F2]">VYOMI CLUB MANAGEMENT</h1>
+          <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-[#1F1F23] text-[#D4AF37] border border-[#303034]">Android Prototype</span>
+        </div>
+        <p class="text-xs text-[#B8B8BF]">Staff-Facing Operational System &bull; 412 &times; 915dp Luxury Android Architecture</p>
+      </div>
+    </div>
+
+    <!-- ROLE SWITCHER BUTTONS -->
+    <div class="flex flex-wrap items-center gap-1.5 bg-[#171719] p-1.5 rounded-xl border border-[#303034]">
+      <button onclick="setRole('frontdesk')" id="btn-role-frontdesk" class="role-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-[#F5F5F2] text-[#0B0B0C] shadow-sm">
+        🛎️ Front Desk
+      </button>
+      <button onclick="setRole('mastertrainer')" id="btn-role-mastertrainer" class="role-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all text-[#B8B8BF] hover:text-[#F5F5F2]">
+        🎯 Master Trainer
+      </button>
+      <button onclick="setRole('trainer')" id="btn-role-trainer" class="role-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all text-[#B8B8BF] hover:text-[#F5F5F2]">
+        🏋️ Trainer
+      </button>
+      <button onclick="setRole('owner')" id="btn-role-owner" class="role-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all text-[#B8B8BF] hover:text-[#F5F5F2]">
+        👑 Owner / Admin
+      </button>
+      <button onclick="setRole('components')" id="btn-role-components" class="role-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all text-[#D4AF37] hover:bg-[#232327]">
+        🧩 Design System
+      </button>
+      <button onclick="setRole('proposed')" id="btn-role-proposed" class="role-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all text-[#9CA3AF] hover:bg-[#232327]">
+        🧪 Proposed Specs
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN STAGE: SIMULATOR & CONTROL PANEL -->
+  <main class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-start justify-center">
+
+    <!-- LEFT / CONTROLS & SCREEN CATALOG -->
+    <div class="lg:col-span-4 bg-[#171719] border border-[#303034] rounded-2xl p-4 flex flex-col gap-4 text-sm order-2 lg:order-1">
+      <div class="flex items-center justify-between border-b border-[#26262B] pb-3">
+        <div>
+          <span class="text-xs font-semibold text-[#D4AF37] uppercase tracking-wider" id="active-group-label">SCREEN GROUP 2</span>
+          <h2 class="font-semibold text-base text-[#F5F5F2]" id="active-flow-title">Front Desk Operations</h2>
+        </div>
+        <span class="text-xs px-2 py-0.5 rounded bg-[#0B0B0C] border border-[#303034] text-[#B8B8BF]" id="screen-count-pill">Screen 4 of 35</span>
+      </div>
+
+      <!-- Quick Screen Navigator for Selected Role -->
+      <div>
+        <label class="block text-xs font-medium text-[#B8B8BF] mb-2">Jump to Screen in Current Flow:</label>
+        <div class="flex flex-col gap-1 max-h-[360px] overflow-y-auto pr-1 custom-scrollbar" id="screen-jump-list">
+          <!-- Populated by JS based on active role -->
+        </div>
+      </div>
+
+      <!-- State Toggle Box (Error, Loading, Empty, Normal) -->
+      <div class="bg-[#0B0B0C] rounded-xl p-3 border border-[#26262B]">
+        <span class="block text-xs font-medium text-[#B8B8BF] mb-2">Simulation States:</span>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="toggleSimulationState('normal')" id="btn-state-normal" class="state-btn px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1F1F23] text-[#34D399] border border-[#34D399]/40 flex items-center justify-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-[#34D399]"></span> Normal
+          </button>
+          <button onclick="toggleSimulationState('loading')" id="btn-state-loading" class="state-btn px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#171719] text-[#B8B8BF] border border-[#303034] hover:text-[#F5F5F2] flex items-center justify-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-[#71717A]"></span> Skeleton
+          </button>
+          <button onclick="toggleSimulationState('error')" id="btn-state-error" class="state-btn px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#171719] text-[#B8B8BF] border border-[#303034] hover:text-[#F5F5F2] flex items-center justify-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-[#F87171]"></span> Error State
+          </button>
+          <button onclick="toggleSimulationState('empty')" id="btn-state-empty" class="state-btn px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#171719] text-[#B8B8BF] border border-[#303034] hover:text-[#F5F5F2] flex items-center justify-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-[#FBBF24]"></span> Empty State
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Specs & Architecture Callout -->
+      <div class="bg-[#121214] rounded-xl p-3 border border-[#26262B] text-xs space-y-1.5 text-[#B8B8BF]">
+        <div class="flex justify-between">
+          <span>Viewport</span>
+          <span class="font-mono text-[#F5F5F2]">412 &times; 915 dp</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Theme Surface</span>
+          <span class="font-mono text-[#D4AF37]">#0B0B0C / #171719</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Min Touch Target</span>
+          <span class="font-mono text-[#34D399]">&ge; 48 &times; 48 dp</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Phone Privacy</span>
+          <span class="font-mono text-[#F5F5F2]">+91 98765 &bull;&bull;&bull;&bull;&bull;</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Baseline Trainer Share</span>
+          <span class="font-mono text-[#D4AF37]">50% of Eligible Collection</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER / ANDROID DEVICE SIMULATOR (412 x 890 viewable) -->
+    <div class="lg:col-span-8 flex flex-col items-center order-1 lg:order-2">
+      <div class="device-viewport" id="device-screen">
+        
+        <!-- PUNCHHOLE CAMERA -->
+        <div class="camera-punchhole"></div>
+
+        <!-- ANDROID STATUS BAR (28dp height) -->
+        <div class="h-7 w-full px-6 pt-1.5 flex items-center justify-between text-[11px] font-medium text-[#B8B8BF] z-40 bg-[#0B0B0C] shrink-0 select-none">
+          <span id="android-clock">10:45</span>
+          <div class="flex items-center gap-2">
+            <!-- 5G / Wifi / Battery icons in SVG -->
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4z"/></svg>
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 18.25C2.89 16.48 2 14.34 2 12 2 6.48 6.48 2 12 2s10 4.48 10 10c0 2.34-.89 4.48-2.35 6.25l-.62-.64C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9z"/></svg>
+            <div class="flex items-center gap-0.5">
+              <span class="text-[10px]">94%</span>
+              <div class="w-4 h-2.5 border border-[#B8B8BF] rounded-sm p-0.5 flex items-center">
+                <div class="h-full bg-[#B8B8BF] w-4/5 rounded-2xs"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAIN SCROLLABLE APP SCREEN AREA -->
+        <div class="flex-1 w-full overflow-y-auto custom-scrollbar flex flex-col relative" id="screen-content">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- ANDROID BOTTOM NAVIGATION BAR (FOR ROLES) -->
+        <nav class="w-full bg-[#171719] border-t border-[#303034] shrink-0 z-40" id="bottom-nav">
+          <div class="flex items-center justify-around py-1.5 px-2" id="bottom-nav-tabs">
+            <!-- Rendered according to active role -->
+          </div>
+        </nav>
+
+        <!-- ANDROID GESTURE NAVIGATION PILL (16dp) -->
+        <div class="w-full bg-[#171719] shrink-0 select-none flex flex-col justify-end">
+          <div class="nav-bar-pill"></div>
+        </div>
+
+      </div>
+
+      <!-- CAPTION UNDER PHONE -->
+      <div class="mt-4 text-center">
+        <p class="text-xs text-[#B8B8BF]">Interactive Prototype &bull; Tap buttons, navigate tabs, enter inputs, and test OTP flows.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- JAVASCRIPT SCREEN RENDERING ENGINE & STATE MACHINE -->
+  <script>
+    // Global State
+    let currentRole = 'frontdesk';
+    let currentScreenId = 'scr_fd_home';
+    let simulationState = 'normal'; // 'normal', 'loading', 'error', 'empty'
+
+    // Multi-step Registration Wizard State
+    let regStep = 1;
+    let regFormData = {
+      name: 'Dev Sharma',
+      phone: '9876543210',
+      email: 'dev.sharma@example.com',
+      membershipType: 'Quarterly Gold',
+      duration: '3 Months',
+      price: 18000,
+      photoTaken: true,
+      otp: ''
+    };
+
+    // OTP Timer Simulation
+    let otpCountdown = 45;
+    let otpInterval = null;
+
+    // Screens Definition Table
+    const screens = {
+      // GROUP 1: WELCOME & ACCESS
+      'scr_launch': { id: 'scr_launch', title: '1. Launch Screen', group: 'Welcome & Access', role: 'welcome' },
+      'scr_signin': { id: 'scr_signin', title: '2. Staff Sign-In', group: 'Welcome & Access', role: 'welcome' },
+      'scr_account_more': { id: 'scr_account_more', title: '3. Account & More', group: 'Welcome & Access', role: 'all' },
+
+      // GROUP 2: FRONT DESK
+      'scr_fd_home': { id: 'scr_fd_home', title: '4. Front-Desk Home', group: 'Front Desk', role: 'frontdesk' },
+      'scr_client_directory': { id: 'scr_client_directory', title: '5. Client Directory', group: 'Front Desk', role: 'frontdesk' },
+      'scr_reg_wizard': { id: 'scr_reg_wizard', title: '6-8. New Registration (3 Steps)', group: 'Front Desk', role: 'frontdesk' },
+      'scr_reg_otp': { id: 'scr_reg_otp', title: '9. Registration OTP', group: 'Front Desk', role: 'frontdesk' },
+      'scr_reg_success': { id: 'scr_reg_success', title: '10. Registration Success', group: 'Front Desk', role: 'frontdesk' },
+      'scr_client_detail': { id: 'scr_client_detail', title: '11. Client Detail & Renewal', group: 'Front Desk', role: 'frontdesk' },
+
+      // GROUP 3: MASTER TRAINER
+      'scr_mt_home': { id: 'scr_mt_home', title: '12. Master-Trainer Home', group: 'Master Trainer', role: 'mastertrainer' },
+      'scr_mt_queue': { id: 'scr_mt_queue', title: '13. Assignment Queue', group: 'Master Trainer', role: 'mastertrainer' },
+      'scr_mt_assign': { id: 'scr_mt_assign', title: '14. Assign Trainer', group: 'Master Trainer', role: 'mastertrainer' },
+      'scr_mt_confirm': { id: 'scr_mt_confirm', title: '15. Assignment Confirmation', group: 'Master Trainer', role: 'mastertrainer' },
+      'scr_mt_reassign': { id: 'scr_mt_reassign', title: '16. Reassign Trainer', group: 'Master Trainer', role: 'mastertrainer' },
+      'scr_mt_trainer_dir': { id: 'scr_mt_trainer_dir', title: '17. Trainer Directory & Profile', group: 'Master Trainer', role: 'mastertrainer' },
+
+      // GROUP 4: TRAINER
+      'scr_tr_home': { id: 'scr_tr_home', title: '18. Trainer Home', group: 'Trainer', role: 'trainer' },
+      'scr_tr_myclients': { id: 'scr_tr_myclients', title: '19. My Clients', group: 'Trainer', role: 'trainer' },
+      'scr_tr_start_session': { id: 'scr_tr_start_session', title: '20. Start Session', group: 'Trainer', role: 'trainer' },
+      'scr_tr_session_otp': { id: 'scr_tr_session_otp', title: '21. Session OTP Verification', group: 'Trainer', role: 'trainer' },
+      'scr_tr_session_verified': { id: 'scr_tr_session_verified', title: '22. Attendance Verified (Locked)', group: 'Trainer', role: 'trainer' },
+      'scr_tr_history': { id: 'scr_tr_history', title: '23. Session History', group: 'Trainer', role: 'trainer' },
+
+      // GROUP 5: PAYMENTS
+      'scr_pay_list': { id: 'scr_pay_list', title: '24. Payment List', group: 'Payments', role: 'frontdesk' },
+      'scr_pay_record': { id: 'scr_pay_record', title: '25. Record Payment (50% Baseline)', group: 'Payments', role: 'frontdesk' },
+      'scr_pay_review': { id: 'scr_pay_review', title: '26. Review Payment Details', group: 'Payments', role: 'frontdesk' },
+      'scr_pay_detail': { id: 'scr_pay_detail', title: '27. Payment Recorded & Audit', group: 'Payments', role: 'frontdesk' },
+
+      // GROUP 6: OWNER / ADMIN
+      'scr_own_overview': { id: 'scr_own_overview', title: '28. Owner Overview & Metrics', group: 'Owner / Admin', role: 'owner' },
+      'scr_own_earnings': { id: 'scr_own_earnings', title: '29. Trainer Earnings Summary', group: 'Owner / Admin', role: 'owner' },
+      'scr_own_earnings_detail': { id: 'scr_own_earnings_detail', title: '30. Trainer Earnings Detail', group: 'Owner / Admin', role: 'owner' },
+      'scr_own_six_month': { id: 'scr_own_six_month', title: '31. Six-Month Review & Adjustment', group: 'Owner / Admin', role: 'owner' },
+      'scr_own_pct_history': { id: 'scr_own_pct_history', title: '32. Percentage History & Snapshot', group: 'Owner / Admin', role: 'owner' },
+      'scr_own_staff': { id: 'scr_own_staff', title: '33. Staff & Access Governance', group: 'Owner / Admin', role: 'owner' },
+      'scr_own_memberships': { id: 'scr_own_memberships', title: '34. Membership Configuration', group: 'Owner / Admin', role: 'owner' },
+      'scr_own_audit': { id: 'scr_own_audit', title: '35. Audit Trail & Log', group: 'Owner / Admin', role: 'owner' },
+
+      // PROPOSED FEATURES & DESIGN SYSTEM
+      'scr_proposed': { id: 'scr_proposed', title: 'Proposed Features (Separate)', group: 'Proposed', role: 'proposed' },
+      'scr_components': { id: 'scr_components', title: 'Reusable Design System', group: 'Design System', role: 'components' }
+    };
+
+    // Role Setup Function
+    function setRole(role) {
+      currentRole = role;
+      document.querySelectorAll('.role-btn').forEach(btn => {
+        btn.className = 'role-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all text-[#B8B8BF] hover:text-[#F5F5F2]';
+      });
+      const activeBtn = document.getElementById(`btn-role-${role}`);
+      if (activeBtn) {
+        activeBtn.className = 'role-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-[#F5F5F2] text-[#0B0B0C] shadow-sm';
+      }
+
+      // Default screen per role
+      if (role === 'frontdesk') navigateTo('scr_fd_home');
+      else if (role === 'mastertrainer') navigateTo('scr_mt_home');
+      else if (role === 'trainer') navigateTo('scr_tr_home');
+      else if (role === 'owner') navigateTo('scr_own_overview');
+      else if (role === 'components') navigateTo('scr_components');
+      else if (role === 'proposed') navigateTo('scr_proposed');
+    }
+
+    // Toggle Simulation State
+    function toggleSimulationState(state) {
+      simulationState = state;
+      document.querySelectorAll('.state-btn').forEach(b => {
+        b.className = 'state-btn px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#171719] text-[#B8B8BF] border border-[#303034] hover:text-[#F5F5F2] flex items-center justify-center gap-1.5';
+      });
+      const target = document.getElementById(`btn-state-${state}`);
+      if (target) {
+        if (state === 'normal') target.className = 'state-btn px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1F1F23] text-[#34D399] border border-[#34D399]/40 flex items-center justify-center gap-1.5';
+        else if (state === 'loading') target.className = 'state-btn px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1F1F23] text-[#B8B8BF] border border-[#B8B8BF]/40 flex items-center justify-center gap-1.5';
+        else if (state === 'error') target.className = 'state-btn px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1F1F23] text-[#F87171] border border-[#F87171]/40 flex items-center justify-center gap-1.5';
+        else if (state === 'empty') target.className = 'state-btn px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1F1F23] text-[#FBBF24] border border-[#FBBF24]/40 flex items-center justify-center gap-1.5';
+      }
+      renderScreen();
+    }
+
+    // Navigation Function
+    function navigateTo(screenId) {
+      currentScreenId = screenId;
+      updateSidebarJumpList();
+      renderBottomNav();
+      renderScreen();
+    }
+
+    // Update Jump List in Sidebar
+    function updateSidebarJumpList() {
+      const list = document.getElementById('screen-jump-list');
+      const cur = screens[currentScreenId];
+      if (!cur) return;
+
+      document.getElementById('active-group-label').innerText = cur.group.toUpperCase();
+      document.getElementById('active-flow-title').innerText = cur.title;
+      document.getElementById('screen-count-pill').innerText = cur.id;
+
+      let relevantScreens = Object.values(screens).filter(s => {
+        if (currentRole === 'frontdesk') return s.role === 'frontdesk' || s.role === 'welcome' || s.role === 'all';
+        if (currentRole === 'mastertrainer') return s.role === 'mastertrainer' || s.role === 'all';
+        if (currentRole === 'trainer') return s.role === 'trainer' || s.role === 'all';
+        if (currentRole === 'owner') return s.role === 'owner' || s.role === 'all';
+        if (currentRole === 'components') return s.role === 'components';
+        if (currentRole === 'proposed') return s.role === 'proposed';
+        return true;
+      });
+
+      list.innerHTML = relevantScreens.map(s => {
+        const isActive = s.id === currentScreenId;
+        return `
+          <button onclick="navigateTo('${s.id}')" class="w-full text-left px-2.5 py-2 rounded-lg text-xs flex items-center justify-between transition-all ${
+            isActive ? 'bg-[#F5F5F2] text-[#0B0B0C] font-semibold' : 'text-[#B8B8BF] hover:bg-[#232327] hover:text-[#F5F5F2]'
+          }">
+            <span class="truncate">${s.title}</span>
+            ${isActive ? '<span class="text-[10px] bg-[#0B0B0C] text-[#F5F5F2] px-1.5 py-0.5 rounded">Active</span>' : ''}
+          </button>
+        `;
+      }).join('');
+    }
+
+    // Render Bottom Navigation Tabs
+    function renderBottomNav() {
+      const container = document.getElementById('bottom-nav-tabs');
+      if (['scr_launch', 'scr_signin', 'scr_components'].includes(currentScreenId)) {
+        document.getElementById('bottom-nav').style.display = 'none';
+        return;
+      }
+      document.getElementById('bottom-nav').style.display = 'block';
+
+      let tabs = [];
+      if (currentRole === 'frontdesk') {
+        tabs = [
+          { label: 'Home', icon: '🏠', target: 'scr_fd_home', active: ['scr_fd_home', 'scr_reg_wizard', 'scr_reg_otp', 'scr_reg_success'].includes(currentScreenId) },
+          { label: 'Clients', icon: '👥', target: 'scr_client_directory', active: ['scr_client_directory', 'scr_client_detail'].includes(currentScreenId) },
+          { label: 'Payments', icon: '💳', target: 'scr_pay_list', active: ['scr_pay_list', 'scr_pay_record', 'scr_pay_review', 'scr_pay_detail'].includes(currentScreenId) },
+          { label: 'More', icon: '⚙️', target: 'scr_account_more', active: ['scr_account_more'].includes(currentScreenId) }
+        ];
+      } else if (currentRole === 'mastertrainer') {
+        tabs = [
+          { label: 'Home', icon: '📊', target: 'scr_mt_home', active: ['scr_mt_home'].includes(currentScreenId) },
+          { label: 'Assignments', icon: '📋', target: 'scr_mt_queue', active: ['scr_mt_queue', 'scr_mt_assign', 'scr_mt_confirm', 'scr_mt_reassign'].includes(currentScreenId) },
+          { label: 'Trainers', icon: '🏋️', target: 'scr_mt_trainer_dir', active: ['scr_mt_trainer_dir'].includes(currentScreenId) },
+          { label: 'More', icon: '⚙️', target: 'scr_account_more', active: ['scr_account_more'].includes(currentScreenId) }
+        ];
+      } else if (currentRole === 'trainer') {
+        tabs = [
+          { label: 'Home', icon: '⚡', target: 'scr_tr_home', active: ['scr_tr_home'].includes(currentScreenId) },
+          { label: 'My Clients', icon: '👤', target: 'scr_tr_myclients', active: ['scr_tr_myclients', 'scr_tr_start_session', 'scr_tr_session_otp', 'scr_tr_session_verified'].includes(currentScreenId) },
+          { label: 'Sessions', icon: '📅', target: 'scr_tr_history', active: ['scr_tr_history'].includes(currentScreenId) },
+          { label: 'More', icon: '⚙️', target: 'scr_account_more', active: ['scr_account_more'].includes(currentScreenId) }
+        ];
+      } else if (currentRole === 'owner') {
+        tabs = [
+          { label: 'Overview', icon: '📈', target: 'scr_own_overview', active: ['scr_own_overview'].includes(currentScreenId) },
+          { label: 'Clients', icon: '👥', target: 'scr_client_directory', active: ['scr_client_directory'].includes(currentScreenId) },
+          { label: 'Finance', icon: '💰', target: 'scr_own_earnings', active: ['scr_own_earnings', 'scr_own_earnings_detail', 'scr_own_six_month', 'scr_own_pct_history'].includes(currentScreenId) },
+          { label: 'More', icon: '⚙️', target: 'scr_own_staff', active: ['scr_own_staff', 'scr_own_memberships', 'scr_own_audit', 'scr_account_more'].includes(currentScreenId) }
+        ];
+      } else {
+        // Fallback or generic
+        tabs = [
+          { label: 'Back to Flow', icon: '⬅️', target: 'scr_fd_home', active: false }
+        ];
+      }
+
+      container.innerHTML = tabs.map(tab => `
+        <button onclick="navigateTo('${tab.target}')" class="flex flex-col items-center justify-center py-1 px-3 rounded-lg transition-all min-w-[56px] min-h-[48px] ${
+          tab.active ? 'text-[#F5F5F2]' : 'text-[#7A7A82] hover:text-[#B8B8BF]'
+        }">
+          <span class="text-base">${tab.icon}</span>
+          <span class="text-[11px] font-medium mt-0.5 ${tab.active ? 'text-[#F5F5F2] font-semibold' : ''}">${tab.label}</span>
+          ${tab.active ? '<span class="w-1.5 h-1.5 rounded-full bg-[#D4AF37] mt-0.5"></span>' : '<span class="w-1.5 h-1.5 mt-0.5 opacity-0"></span>'}
+        </button>
+      `).join('');
+    }
+
+    // MAIN RENDER SCREEN DISPATCHER
+    function renderScreen() {
+      const container = document.getElementById('screen-content');
+      
+      // If Skeleton loading state is active
+      if (simulationState === 'loading') {
+        container.innerHTML = renderSkeletonScreen();
+        return;
+      }
+      // If Error state is active
+      if (simulationState === 'error') {
+        container.innerHTML = renderErrorStateScreen();
+        return;
+      }
+
+      switch (currentScreenId) {
+        // GROUP 1
+        case 'scr_launch': container.innerHTML = renderLaunchScreen(); break;
+        case 'scr_signin': container.innerHTML = renderSignInScreen(); break;
+        case 'scr_account_more': container.innerHTML = renderAccountMoreScreen(); break;
+
+        // GROUP 2
+        case 'scr_fd_home': container.innerHTML = renderFrontDeskHomeScreen(); break;
+        case 'scr_client_directory': container.innerHTML = renderClientDirectoryScreen(); break;
+        case 'scr_reg_wizard': container.innerHTML = renderRegistrationWizardScreen(); break;
+        case 'scr_reg_otp': container.innerHTML = renderRegistrationOtpScreen(); break;
+        case 'scr_reg_success': container.innerHTML = renderRegistrationSuccessScreen(); break;
+        case 'scr_client_detail': container.innerHTML = renderClientDetailScreen(); break;
+
+        // GROUP 3
+        case 'scr_mt_home': container.innerHTML = renderMasterTrainerHomeScreen(); break;
+        case 'scr_mt_queue': container.innerHTML = renderAssignmentQueueScreen(); break;
+        case 'scr_mt_assign': container.innerHTML = renderAssignTrainerScreen(); break;
+        case 'scr_mt_confirm': container.innerHTML = renderAssignmentConfirmationScreen(); break;
+        case 'scr_mt_reassign': container.innerHTML = renderReassignTrainerScreen(); break;
+        case 'scr_mt_trainer_dir': container.innerHTML = renderTrainerDirectoryScreen(); break;
+
+        // GROUP 4
+        case 'scr_tr_home': container.innerHTML = renderTrainerHomeScreen(); break;
+        case 'scr_tr_myclients': container.innerHTML = renderTrainerMyClientsScreen(); break;
+        case 'scr_tr_start_session': container.innerHTML = renderStartSessionScreen(); break;
+        case 'scr_tr_session_otp': container.innerHTML = renderSessionOtpScreen(); break;
+        case 'scr_tr_session_verified': container.innerHTML = renderSessionVerifiedScreen(); break;
+        case 'scr_tr_history': container.innerHTML = renderSessionHistoryScreen(); break;
+
+        // GROUP 5
+        case 'scr_pay_list': container.innerHTML = renderPaymentListScreen(); break;
+        case 'scr_pay_record': container.innerHTML = renderRecordPaymentScreen(); break;
+        case 'scr_pay_review': container.innerHTML = renderReviewPaymentScreen(); break;
+        case 'scr_pay_detail': container.innerHTML = renderPaymentDetailScreen(); break;
+
+        // GROUP 6
+        case 'scr_own_overview': container.innerHTML = renderOwnerOverviewScreen(); break;
+        case 'scr_own_earnings': container.innerHTML = renderTrainerEarningsScreen(); break;
+        case 'scr_own_earnings_detail': container.innerHTML = renderTrainerEarningsDetailScreen(); break;
+        case 'scr_own_six_month': container.innerHTML = renderSixMonthReviewScreen(); break;
+        case 'scr_own_pct_history': container.innerHTML = renderPercentageHistoryScreen(); break;
+        case 'scr_own_staff': container.innerHTML = renderStaffAccessScreen(); break;
+        case 'scr_own_memberships': container.innerHTML = renderMembershipConfigScreen(); break;
+        case 'scr_own_audit': container.innerHTML = renderAuditActivityScreen(); break;
+
+        // PROPOSED & COMPONENTS
+        case 'scr_proposed': container.innerHTML = renderProposedFeaturesScreen(); break;
+        case 'scr_components': container.innerHTML = renderDesignSystemShowroomScreen(); break;
+
+        default:
+          container.innerHTML = `<div class="p-6 text-center text-[#B8B8BF]">Screen under implementation: ${currentScreenId}</div>`;
+      }
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 1: LAUNCH SCREEN
+    // ----------------------------------------------------
+    function renderLaunchScreen() {
+      return `
+        <div class="flex-1 flex flex-col items-center justify-center p-6 text-center bg-[#0B0B0C] animate-fade-in">
+          <div class="w-16 h-16 rounded-2xl bg-[#171719] border border-[#303034] flex items-center justify-center mb-4 shadow-xl">
+            <span class="text-3xl text-[#D4AF37] font-bold brand-font">V</span>
+          </div>
+          <h1 class="brand-font text-2xl font-bold tracking-widest text-[#F5F5F2]">VYOMI</h1>
+          <p class="text-xs text-[#B8B8BF] uppercase tracking-widest mt-1">Fitness Club Management</p>
+          
+          <div class="mt-16 flex flex-col items-center">
+            <div class="w-6 h-6 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
+            <span class="text-xs text-[#7A7A82] mt-3 font-mono">Syncing facility registry...</span>
+          </div>
+
+          <div class="mt-20 w-full max-w-xs">
+            <button onclick="navigateTo('scr_signin')" class="tap-highlight w-full py-3.5 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-xl text-sm shadow-md">
+              Proceed to Staff Sign-In
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 2: STAFF SIGN-IN
+    // ----------------------------------------------------
+    function renderSignInScreen() {
+      return `
+        <div class="flex-1 flex flex-col justify-between p-6 bg-[#0B0B0C]">
+          <div>
+            <!-- Top Branding -->
+            <div class="flex items-center justify-between mb-8 mt-2">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-[#171719] border border-[#303034] flex items-center justify-center text-[#D4AF37] font-bold text-sm brand-font">V</div>
+                <span class="brand-font text-sm font-semibold tracking-wider text-[#F5F5F2]">VYOMI</span>
+              </div>
+              <span class="text-xs text-[#B8B8BF] px-2 py-0.5 rounded bg-[#171719] border border-[#303034]">Staff Terminal</span>
+            </div>
+
+            <h1 class="text-2xl font-semibold text-[#F5F5F2] mb-1">Staff Sign-In</h1>
+            <p class="text-xs text-[#B8B8BF] mb-6">Enter your club credentials to access your assigned operational portal.</p>
+
+            <!-- Form -->
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-medium text-[#B8B8BF] mb-1.5">Staff Identifier or Mobile</label>
+                <input type="text" value="FD-PRIYA-04" class="w-full px-4 py-3 bg-[#171719] border border-[#303034] rounded-xl text-[#F5F5F2] text-sm focus:outline-none focus:border-[#D4AF37]" placeholder="e.g. FD-PRIYA-04">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-1.5">
+                  <label class="block text-xs font-medium text-[#B8B8BF]">Password</label>
+                  <button class="text-xs text-[#D4AF37] hover:underline" onclick="alert('Password reset link has been dispatched to administrator dispatch queue.')">Need Help?</button>
+                </div>
+                <div class="relative">
+                  <input type="password" value="••••••••••••" class="w-full px-4 py-3 bg-[#171719] border border-[#303034] rounded-xl text-[#F5F5F2] text-sm focus:outline-none focus:border-[#D4AF37]">
+                  <button class="absolute right-3 top-3 text-xs text-[#B8B8BF]">Show</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Role Simulator Banner -->
+            <div class="mt-6 p-3 rounded-xl bg-[#171719] border border-[#303034] text-xs">
+              <span class="text-[#D4AF37] font-medium block mb-1">⚡ Quick Prototype Login As:</span>
+              <div class="grid grid-cols-2 gap-1.5 mt-2">
+                <button onclick="setRole('frontdesk')" class="py-1.5 px-2 rounded bg-[#232327] text-left text-xs text-[#F5F5F2] hover:border-[#D4AF37] border border-transparent">
+                  🛎️ Priya (Front Desk)
+                </button>
+                <button onclick="setRole('mastertrainer')" class="py-1.5 px-2 rounded bg-[#232327] text-left text-xs text-[#F5F5F2] hover:border-[#D4AF37] border border-transparent">
+                  🎯 Arjun (Master Trainer)
+                </button>
+                <button onclick="setRole('trainer')" class="py-1.5 px-2 rounded bg-[#232327] text-left text-xs text-[#F5F5F2] hover:border-[#D4AF37] border border-transparent">
+                  🏋️ Kabir (Trainer)
+                </button>
+                <button onclick="setRole('owner')" class="py-1.5 px-2 rounded bg-[#232327] text-left text-xs text-[#F5F5F2] hover:border-[#D4AF37] border border-transparent">
+                  👑 Rohan (Owner)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Action -->
+          <div class="pt-6">
+            <button onclick="navigateTo('scr_fd_home')" class="tap-highlight w-full py-3.5 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-xl text-sm shadow-md hover:bg-[#EAE6DF]">
+              Sign In to Terminal
+            </button>
+            <p class="text-[11px] text-center text-[#7A7A82] mt-3">Protected under Vyomi Operational Access Control &bull; v1.2.0</p>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 4: FRONT-DESK HOME
+    // ----------------------------------------------------
+    function renderFrontDeskHomeScreen() {
+      return `
+        <div class="p-5 space-y-5">
+          <!-- Top Greeting -->
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-xs text-[#B8B8BF]">Wednesday, 08 November 2026</p>
+              <h1 class="text-xl font-bold text-[#F5F5F2] mt-0.5">Good Morning, Priya</h1>
+            </div>
+            <div class="w-9 h-9 rounded-full bg-[#171719] border border-[#303034] flex items-center justify-center text-xs text-[#D4AF37] font-semibold">
+              FD
+            </div>
+          </div>
+
+          <!-- Primary Operational CTA -->
+          <button onclick="navigateTo('scr_reg_wizard')" class="tap-highlight w-full py-4 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-2xl flex items-center justify-between px-5 shadow-lg shadow-black/40">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-[#0B0B0C] text-[#F5F5F2] flex items-center justify-center text-sm font-bold">+</div>
+              <div class="text-left">
+                <span class="block text-sm font-bold">Register New Client</span>
+                <span class="block text-[11px] text-[#55555C]">3-step photo & OTP verified enrollment</span>
+              </div>
+            </div>
+            <span class="text-lg">➔</span>
+          </button>
+
+          <!-- Search Bar -->
+          <div class="relative">
+            <input type="text" placeholder="Search client by name or phone (+91)..." class="w-full pl-10 pr-4 py-3 bg-[#171719] border border-[#303034] rounded-xl text-xs text-[#F5F5F2] placeholder-[#7A7A82] focus:outline-none focus:border-[#D4AF37]">
+            <span class="absolute left-3.5 top-3.5 text-xs text-[#7A7A82]">🔍</span>
+          </div>
+
+          <!-- Summary Metric Cards -->
+          <div>
+            <h2 class="text-xs font-semibold text-[#B8B8BF] uppercase tracking-wider mb-2.5">Today's Front Desk Summary</h2>
+            <div class="grid grid-cols-3 gap-2.5">
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3 text-center">
+                <span class="block text-xl font-bold text-[#F5F5F2]">4</span>
+                <span class="block text-[11px] text-[#B8B8BF] mt-0.5">Registered Today</span>
+              </div>
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3 text-center">
+                <span class="block text-xl font-bold text-[#D4AF37]">182</span>
+                <span class="block text-[11px] text-[#B8B8BF] mt-0.5">Active Members</span>
+              </div>
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3 text-center">
+                <span class="block text-xl font-bold text-[#FBBF24]">2</span>
+                <span class="block text-[11px] text-[#B8B8BF] mt-0.5">Pending OTP</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Registrations List -->
+          <div>
+            <div class="flex items-center justify-between mb-2.5">
+              <h2 class="text-xs font-semibold text-[#B8B8BF] uppercase tracking-wider">Recent Registrations</h2>
+              <button onclick="navigateTo('scr_client_directory')" class="text-xs text-[#D4AF37] hover:underline font-medium">View All (182)</button>
+            </div>
+
+            <div class="space-y-2">
+              <!-- Client Row 1 -->
+              <div onclick="navigateTo('scr_client_detail')" class="tap-highlight bg-[#171719] border border-[#303034] rounded-xl p-3 flex items-center justify-between cursor-pointer hover:border-[#45454B]">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-[#232327] border border-[#303034] flex items-center justify-center font-semibold text-xs text-[#D4AF37]">
+                    DS
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-semibold text-[#F5F5F2]">Dev Sharma</h3>
+                    <p class="text-[11px] text-[#B8B8BF]">+91 98765 ••••• &bull; Quarterly Gold</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-[#064E3B]/40 text-[#34D399] border border-[#34D399]/30">
+                    <span>●</span> Verified
+                  </span>
+                  <span class="block text-[10px] text-[#7A7A82] mt-1">10:14 AM</span>
+                </div>
+              </div>
+
+              <!-- Client Row 2 -->
+              <div onclick="navigateTo('scr_client_detail')" class="tap-highlight bg-[#171719] border border-[#303034] rounded-xl p-3 flex items-center justify-between cursor-pointer hover:border-[#45454B]">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-[#232327] border border-[#303034] flex items-center justify-center font-semibold text-xs text-[#F5F5F2]">
+                    AK
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-semibold text-[#F5F5F2]">Ananya Kapoor</h3>
+                    <p class="text-[11px] text-[#B8B8BF]">+91 98201 ••••• &bull; Annual Platinum</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-[#064E3B]/40 text-[#34D399] border border-[#34D399]/30">
+                    <span>●</span> Verified
+                  </span>
+                  <span class="block text-[10px] text-[#7A7A82] mt-1">09:30 AM</span>
+                </div>
+              </div>
+
+              <!-- Client Row 3 (Pending OTP demo) -->
+              <div onclick="navigateTo('scr_reg_otp')" class="tap-highlight bg-[#171719] border border-[#303034] rounded-xl p-3 flex items-center justify-between cursor-pointer hover:border-[#45454B]">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-[#232327] border border-[#303034] flex items-center justify-center font-semibold text-xs text-[#FBBF24]">
+                    RM
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-semibold text-[#F5F5F2]">Rishi Mehta</h3>
+                    <p class="text-[11px] text-[#B8B8BF]">+91 97114 ••••• &bull; Monthly Core</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-[#78350F]/40 text-[#FBBF24] border border-[#FBBF24]/30">
+                    <span>⏳</span> Pending OTP
+                  </span>
+                  <span class="block text-[10px] text-[#7A7A82] mt-1">08:45 AM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 5: CLIENT DIRECTORY
+    // ----------------------------------------------------
+    function renderClientDirectoryScreen() {
+      if (simulationState === 'empty') {
+        return `
+          <div class="p-5 flex-1 flex flex-col items-center justify-center text-center">
+            <div class="w-16 h-16 rounded-2xl bg-[#171719] border border-[#303034] flex items-center justify-center text-2xl mb-4 text-[#7A7A82]">
+              👥
+            </div>
+            <h2 class="text-base font-semibold text-[#F5F5F2]">No Clients Found</h2>
+            <p class="text-xs text-[#B8B8BF] max-w-xs mt-1 mb-6">No client records match the selected filter criteria or search string.</p>
+            <button onclick="toggleSimulationState('normal')" class="px-4 py-2 bg-[#F5F5F2] text-[#0B0B0C] rounded-xl text-xs font-semibold">
+              Reset Filters
+            </button>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h1 class="text-lg font-bold text-[#F5F5F2]">Client Directory</h1>
+            <button onclick="navigateTo('scr_reg_wizard')" class="tap-highlight px-3 py-1.5 bg-[#F5F5F2] text-[#0B0B0C] rounded-lg text-xs font-semibold">
+              + New Client
+            </button>
+          </div>
+
+          <!-- Search & Filter Chips -->
+          <div class="space-y-2.5">
+            <div class="relative">
+              <input type="text" placeholder="Search by name or phone (+91)..." class="w-full pl-9 pr-4 py-2.5 bg-[#171719] border border-[#303034] rounded-xl text-xs text-[#F5F5F2] placeholder-[#7A7A82]">
+              <span class="absolute left-3 top-3 text-xs text-[#7A7A82]">🔍</span>
+            </div>
+
+            <div class="flex gap-2 overflow-x-auto pb-1 text-xs">
+              <button class="px-3 py-1 rounded-full bg-[#F5F5F2] text-[#0B0B0C] font-semibold whitespace-nowrap">All (182)</button>
+              <button class="px-3 py-1 rounded-full bg-[#171719] text-[#B8B8BF] border border-[#303034] whitespace-nowrap">Active (168)</button>
+              <button class="px-3 py-1 rounded-full bg-[#171719] text-[#B8B8BF] border border-[#303034] whitespace-nowrap">Pending OTP (2)</button>
+              <button class="px-3 py-1 rounded-full bg-[#171719] text-[#B8B8BF] border border-[#303034] whitespace-nowrap">Expiring Soon (12)</button>
+            </div>
+          </div>
+
+          <!-- List of Clients -->
+          <div class="space-y-2">
+            ${[
+              { name: 'Dev Sharma', phone: '+91 98765 •••••', plan: 'Quarterly Gold', status: 'Active', trainer: 'Kabir Roy', initials: 'DS' },
+              { name: 'Ananya Kapoor', phone: '+91 98201 •••••', plan: 'Annual Platinum', status: 'Active', trainer: 'Sneha Rao', initials: 'AK' },
+              { name: 'Rishi Mehta', phone: '+91 97114 •••••', plan: 'Monthly Core', status: 'Pending OTP', trainer: 'Unassigned', initials: 'RM' },
+              { name: 'Pooja Hegde', phone: '+91 99230 •••••', plan: 'Half-Yearly Elite', status: 'Active', trainer: 'Vikram Malhotra', initials: 'PH' },
+              { name: 'Karan Singhania', phone: '+91 98331 •••••', plan: 'Quarterly Gold', status: 'Active', trainer: 'Kabir Roy', initials: 'KS' }
+            ].map(c => `
+              <div onclick="navigateTo('scr_client_detail')" class="tap-highlight bg-[#171719] border border-[#303034] rounded-xl p-3 flex items-center justify-between cursor-pointer hover:border-[#45454B]">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-[#232327] border border-[#303034] flex items-center justify-center font-bold text-xs ${c.status === 'Active' ? 'text-[#D4AF37]' : 'text-[#FBBF24]'}">
+                    ${c.initials}
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-semibold text-[#F5F5F2]">${c.name}</h3>
+                    <p class="text-[11px] text-[#B8B8BF]">${c.phone} &bull; ${c.plan}</p>
+                    <p class="text-[10px] text-[#7A7A82] mt-0.5">Trainer: <span class="${c.trainer === 'Unassigned' ? 'text-[#FBBF24]' : 'text-[#F5F5F2]'}">${c.trainer}</span></p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium ${
+                    c.status === 'Active' ? 'bg-[#064E3B]/40 text-[#34D399] border border-[#34D399]/30' : 'bg-[#78350F]/40 text-[#FBBF24] border border-[#FBBF24]/30'
+                  }">
+                    ${c.status === 'Active' ? '● Active' : '⏳ Pending OTP'}
+                  </span>
+                  <span class="block text-xs text-[#7A7A82] mt-2">➔</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // FRESH CLEAN CLIENT REGISTRATION (PREMIUM & LUXURIOUS)
+    // ----------------------------------------------------
+    function renderRegistrationWizardScreen() {
+      if (!regFormData.address) regFormData.address = 'Penthouse 14B, Altamount Road, Mumbai';
+      if (typeof regFormData.phoneVerified === 'undefined') regFormData.phoneVerified = false;
+      if (typeof regFormData.otpSent === 'undefined') regFormData.otpSent = false;
+
+      return `
+        <div class="p-5 flex-1 flex flex-col justify-between bg-[#0B0B0C]">
+          <div class="space-y-4">
+            <!-- Top App Bar -->
+            <div class="flex items-center justify-between pb-1 border-b border-[#232327]">
+              <div class="flex items-center gap-2.5">
+                <button onclick="navigateTo('scr_fd_home')" class="w-8 h-8 rounded-lg bg-[#171719] border border-[#303034] flex items-center justify-center text-xs text-[#F5F5F2] hover:border-[#D4AF37]">
+                  ←
+                </button>
+                <h1 class="text-lg font-bold text-[#F5F5F2] tracking-wide">Register Client</h1>
+              </div>
+              <div class="w-7 h-7 rounded-lg bg-[#171719] border border-[#303034] flex items-center justify-center text-[#D4AF37] font-bold text-xs brand-font">
+                V
+              </div>
+            </div>
+
+            <!-- SECTION 1: CLIENT IDENTITY -->
+            <div>
+              <span class="block text-[10px] font-semibold tracking-widest text-[#D4AF37] uppercase mb-2">1. Client Identity</span>
+              
+              <!-- Photo Capture & Avatar -->
+              <div class="p-3 bg-[#171719] border border-[#303034] rounded-xl flex items-center gap-3.5 mb-3">
+                <div onclick="regFormData.photoTaken=!regFormData.photoTaken; renderScreen()" class="w-14 h-14 rounded-full bg-[#232327] border-2 ${regFormData.photoTaken ? 'border-[#D4AF37]' : 'border-[#303034]'} flex items-center justify-center cursor-pointer overflow-hidden shadow-inner shrink-0">
+                  ${regFormData.photoTaken ? `
+                    <div class="flex flex-col items-center justify-center">
+                      <span class="text-xl">👤</span>
+                      <span class="text-[8px] text-[#34D399] font-semibold mt-0.5">Verified</span>
+                    </div>
+                  ` : `
+                    <span class="text-xl text-[#7A7A82]">📷</span>
+                  `}
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-semibold text-[#F5F5F2]">${regFormData.photoTaken ? 'Face Photo Captured' : 'Face Photo'}</span>
+                    ${regFormData.photoTaken ? '<span class="text-[9px] px-1.5 py-0.2 rounded bg-[#064E3B]/40 text-[#34D399] border border-[#34D399]/30">● Verified</span>' : ''}
+                  </div>
+                  <p class="text-[11px] text-[#B8B8BF] mt-0.5">Tap circle to capture biometric verification photo</p>
+                </div>
+              </div>
+
+              <!-- Name Input -->
+              <div class="mb-2.5">
+                <label class="block text-[11px] font-medium text-[#B8B8BF] mb-1">Client Full Name *</label>
+                <input type="text" id="reg-name" value="${regFormData.name}" oninput="regFormData.name=this.value" class="w-full px-3.5 py-2.5 bg-[#171719] border border-[#303034] rounded-xl text-xs text-[#F5F5F2] focus:border-[#D4AF37] focus:outline-none" placeholder="e.g. Dev Sharma">
+              </div>
+
+              <!-- Address Input -->
+              <div>
+                <label class="block text-[11px] font-medium text-[#B8B8BF] mb-1">Residential Address *</label>
+                <input type="text" id="reg-address" value="${regFormData.address}" oninput="regFormData.address=this.value" class="w-full px-3.5 py-2.5 bg-[#171719] border border-[#303034] rounded-xl text-xs text-[#F5F5F2] focus:border-[#D4AF37] focus:outline-none" placeholder="Penthouse / Apartment, Street, City">
+              </div>
+            </div>
+
+            <!-- SECTION 2: CONTACT & OTP VERIFICATION -->
+            <div>
+              <span class="block text-[10px] font-semibold tracking-widest text-[#D4AF37] uppercase mb-2">2. Contact & OTP Verification</span>
+              
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3 space-y-2.5">
+                <div>
+                  <label class="block text-[11px] font-medium text-[#B8B8BF] mb-1">Mobile Phone (For OTP Verification) *</label>
+                  <div class="flex gap-2">
+                    <span class="px-3 py-2 bg-[#232327] border border-[#303034] rounded-xl text-xs text-[#F5F5F2] font-mono select-none flex items-center">+91</span>
+                    <input type="tel" id="reg-phone" value="${regFormData.phone}" oninput="regFormData.phone=this.value" maxlength="10" class="flex-1 px-3 py-2 bg-[#232327] border border-[#303034] rounded-xl text-xs text-[#F5F5F2] font-mono focus:border-[#D4AF37] focus:outline-none" placeholder="10-digit mobile">
+                    
+                    ${!regFormData.phoneVerified ? `
+                      <button onclick="regFormData.otpSent=true; renderScreen()" class="px-3 py-2 bg-[#1F1F23] text-[#D4AF37] border border-[#D4AF37]/50 rounded-xl text-[11px] font-bold hover:bg-[#D4AF37] hover:text-[#0B0B0C] transition-all whitespace-nowrap">
+                        ${regFormData.otpSent ? 'Resend' : 'Verify OTP'}
+                      </button>
+                    ` : `
+                      <span class="px-2.5 py-2 bg-[#064E3B]/40 text-[#34D399] border border-[#34D399]/40 rounded-xl text-[11px] font-bold flex items-center gap-1">
+                        ● Verified
+                      </span>
+                    `}
+                  </div>
+                </div>
+
+                <!-- OTP Entry Row (Displayed when OTP requested) -->
+                ${regFormData.otpSent && !regFormData.phoneVerified ? `
+                  <div class="pt-2 border-t border-[#26262B] space-y-2 animate-fade-in">
+                    <div class="flex justify-between items-center">
+                      <span class="text-[11px] text-[#B8B8BF]">Enter 6-digit OTP received by client:</span>
+                      <span class="text-[10px] font-mono text-[#D4AF37]">Expires 04:30</span>
+                    </div>
+
+                    <div class="flex justify-between gap-1.5 max-w-[280px]">
+                      <input type="text" maxlength="1" value="4" class="w-10 h-11 bg-[#232327] border border-[#D4AF37] rounded-lg text-center text-sm font-bold text-[#F5F5F2] focus:outline-none">
+                      <input type="text" maxlength="1" value="8" class="w-10 h-11 bg-[#232327] border border-[#D4AF37] rounded-lg text-center text-sm font-bold text-[#F5F5F2] focus:outline-none">
+                      <input type="text" maxlength="1" value="2" class="w-10 h-11 bg-[#232327] border border-[#D4AF37] rounded-lg text-center text-sm font-bold text-[#F5F5F2] focus:outline-none">
+                      <input type="text" maxlength="1" value="9" class="w-10 h-11 bg-[#232327] border border-[#D4AF37] rounded-lg text-center text-sm font-bold text-[#F5F5F2] focus:outline-none">
+                      <input type="text" maxlength="1" value="1" class="w-10 h-11 bg-[#232327] border border-[#D4AF37] rounded-lg text-center text-sm font-bold text-[#F5F5F2] focus:outline-none">
+                      <input type="text" maxlength="1" value="6" class="w-10 h-11 bg-[#232327] border border-[#D4AF37] rounded-lg text-center text-sm font-bold text-[#F5F5F2] focus:outline-none">
+                    </div>
+
+                    <div class="flex justify-end pt-1">
+                      <button onclick="regFormData.phoneVerified=true; renderScreen()" class="px-3 py-1.5 bg-[#F5F5F2] text-[#0B0B0C] rounded-lg text-[11px] font-bold shadow-sm">
+                        Confirm Code ✓
+                      </button>
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+
+            <!-- SECTION 3: MEMBERSHIP DETAILS -->
+            <div>
+              <span class="block text-[10px] font-semibold tracking-widest text-[#D4AF37] uppercase mb-2">3. Membership Plan</span>
+
+              <div class="space-y-2">
+                <div onclick="regFormData.membershipType='Quarterly Gold'; regFormData.duration='3 Months'; regFormData.price=18000; renderScreen()" class="p-3 rounded-xl border ${regFormData.membershipType === 'Quarterly Gold' ? 'bg-[#1F1F23] border-[#D4AF37]' : 'bg-[#171719] border-[#303034]'} cursor-pointer flex justify-between items-center transition-all">
+                  <div>
+                    <span class="block text-xs font-bold text-[#F5F5F2]">Quarterly Gold</span>
+                    <span class="block text-[10px] text-[#B8B8BF]">3 Months • Full Facility Access</span>
+                  </div>
+                  <span class="text-xs font-bold text-[#D4AF37]">₹18,000</span>
+                </div>
+
+                <div onclick="regFormData.membershipType='Annual Platinum'; regFormData.duration='12 Months'; regFormData.price=60000; renderScreen()" class="p-3 rounded-xl border ${regFormData.membershipType === 'Annual Platinum' ? 'bg-[#1F1F23] border-[#D4AF37]' : 'bg-[#171719] border-[#303034]'} cursor-pointer flex justify-between items-center transition-all">
+                  <div>
+                    <span class="block text-xs font-bold text-[#F5F5F2]">Annual Platinum VIP</span>
+                    <span class="block text-[10px] text-[#B8B8BF]">12 Months • Premium Locker</span>
+                  </div>
+                  <span class="text-xs font-bold text-[#D4AF37]">₹60,000</span>
+                </div>
+
+                <div onclick="regFormData.membershipType='Monthly Core'; regFormData.duration='1 Month'; regFormData.price=7500; renderScreen()" class="p-3 rounded-xl border ${regFormData.membershipType === 'Monthly Core' ? 'bg-[#1F1F23] border-[#D4AF37]' : 'bg-[#171719] border-[#303034]'} cursor-pointer flex justify-between items-center transition-all">
+                  <div>
+                    <span class="block text-xs font-bold text-[#F5F5F2]">Monthly Core</span>
+                    <span class="block text-[10px] text-[#B8B8BF]">1 Month • General Floor</span>
+                  </div>
+                  <span class="text-xs font-bold text-[#D4AF37]">₹7,500</span>
+                </div>
+              </div>
+
+              <!-- Compact Validity Badge -->
+              <div class="mt-2.5 px-3 py-2 bg-[#171719] border border-[#303034] rounded-xl flex justify-between items-center text-[11px]">
+                <span class="text-[#B8B8BF]">Validity: 08 Nov 2026 – 07 Feb 2027</span>
+                <span class="font-bold text-[#D4AF37]">90 Days</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Action Button -->
+          <div class="pt-4 pb-1">
+            <button onclick="navigateTo('scr_reg_success')" class="tap-highlight w-full py-3.5 bg-[#F5F5F2] text-[#0B0B0C] font-bold rounded-xl text-xs shadow-lg hover:bg-[#EAE6DF] transition-all">
+              Complete Registration ➔
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function startRegistrationOtp() {
+      otpCountdown = 45;
+      if (otpInterval) clearInterval(otpInterval);
+      otpInterval = setInterval(() => {
+        if (otpCountdown > 0) {
+          otpCountdown--;
+          const el = document.getElementById('otp-timer');
+          if (el) el.innerText = `Resend code in 00:${otpCountdown < 10 ? '0' : ''}${otpCountdown}`;
+        }
+      }, 1000);
+      navigateTo('scr_reg_otp');
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 9: REGISTRATION OTP
+    // ----------------------------------------------------
+    function renderRegistrationOtpScreen() {
+      return `
+        <div class="p-6 flex-1 flex flex-col justify-between">
+          <div>
+            <!-- Header -->
+            <button onclick="navigateTo('scr_reg_wizard')" class="text-xs text-[#B8B8BF] hover:text-[#F5F5F2] mb-4 flex items-center gap-1">
+              ← Back to Details
+            </button>
+            <h1 class="text-2xl font-bold text-[#F5F5F2]">Verify Client Phone</h1>
+            <p class="text-xs text-[#B8B8BF] mt-1">
+              An OTP has been sent to client phone <strong class="text-[#F5F5F2] font-mono">+91 98765 •••••</strong>.
+            </p>
+            <p class="text-[11px] text-[#7A7A82] mt-0.5">Please ask the client for the 6-digit code and enter below.</p>
+
+            <!-- 6-Digit OTP Box Simulation -->
+            <div class="my-8">
+              <div class="flex justify-between gap-2 max-w-xs mx-auto">
+                <input type="text" maxlength="1" value="4" class="w-12 h-14 bg-[#171719] border-2 border-[#D4AF37] rounded-xl text-center text-xl font-bold text-[#F5F5F2] focus:outline-none">
+                <input type="text" maxlength="1" value="8" class="w-12 h-14 bg-[#171719] border-2 border-[#D4AF37] rounded-xl text-center text-xl font-bold text-[#F5F5F2] focus:outline-none">
+                <input type="text" maxlength="1" value="2" class="w-12 h-14 bg-[#171719] border-2 border-[#D4AF37] rounded-xl text-center text-xl font-bold text-[#F5F5F2] focus:outline-none">
+                <input type="text" maxlength="1" value="9" class="w-12 h-14 bg-[#171719] border-2 border-[#D4AF37] rounded-xl text-center text-xl font-bold text-[#F5F5F2] focus:outline-none">
+                <input type="text" maxlength="1" value="1" class="w-12 h-14 bg-[#171719] border-2 border-[#D4AF37] rounded-xl text-center text-xl font-bold text-[#F5F5F2] focus:outline-none">
+                <input type="text" maxlength="1" value="6" class="w-12 h-14 bg-[#171719] border-2 border-[#D4AF37] rounded-xl text-center text-xl font-bold text-[#F5F5F2] focus:outline-none">
+              </div>
+
+              <!-- Resend Countdown -->
+              <div class="text-center mt-5">
+                <span id="otp-timer" class="text-xs font-mono text-[#B8B8BF]">Resend code in 00:${otpCountdown < 10 ? '0' : ''}${otpCountdown}</span>
+                <div class="mt-2">
+                  <button onclick="otpCountdown=45; alert('New OTP dispatched via SMS provider simulation.')" class="text-xs text-[#D4AF37] hover:underline">
+                    Resend Code Now
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Error State Example Trigger -->
+            <div class="bg-[#171719] border border-[#303034] rounded-xl p-3 text-xs text-[#B8B8BF]">
+              <span class="text-[#D4AF37] font-semibold block mb-1">Testing Safeguards:</span>
+              <span>Input is automatically restricted to numbers. Code expires after 10 minutes. Maximum 3 verification attempts permitted.</span>
+            </div>
+          </div>
+
+          <!-- Verify Action -->
+          <div class="pt-4">
+            <button onclick="navigateTo('scr_reg_success')" class="tap-highlight w-full py-4 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-xl text-sm shadow-md">
+              Verify & Complete Registration
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 10: REGISTRATION SUCCESS
+    // ----------------------------------------------------
+    function renderRegistrationSuccessScreen() {
+      return `
+        <div class="p-6 flex-1 flex flex-col justify-between text-center">
+          <div class="pt-6">
+            <!-- Success Icon -->
+            <div class="w-16 h-16 rounded-full bg-[#064E3B] border border-[#34D399] text-[#34D399] flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-[#064E3B]/40">
+              ✓
+            </div>
+            
+            <h1 class="text-2xl font-bold text-[#F5F5F2]">Client Registered</h1>
+            <p class="text-xs text-[#B8B8BF] mt-1">Mobile verified & profile created in database</p>
+
+            <!-- Card Summary -->
+            <div class="bg-[#171719] border border-[#303034] rounded-2xl p-4 text-left my-6 space-y-3">
+              <div class="flex justify-between items-center border-b border-[#26262B] pb-2.5">
+                <span class="text-xs text-[#B8B8BF]">Client Name</span>
+                <span class="text-sm font-bold text-[#F5F5F2]">${regFormData.name}</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-[#26262B] pb-2.5">
+                <span class="text-xs text-[#B8B8BF]">Membership Tier</span>
+                <span class="text-xs font-semibold text-[#D4AF37]">${regFormData.membershipType}</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-[#26262B] pb-2.5">
+                <span class="text-xs text-[#B8B8BF]">Client ID</span>
+                <span class="text-xs font-mono text-[#F5F5F2]">#VY-2026-089</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-[#B8B8BF]">Trainer Assignment</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-[#78350F]/40 text-[#FBBF24] border border-[#FBBF24]/30">
+                  ⏳ Unassigned (Queue)
+                </span>
+              </div>
+            </div>
+
+            <div class="p-3 bg-[#0B0B0C] border border-[#303034] rounded-xl text-xs text-[#B8B8BF] text-left">
+              <span class="font-semibold text-[#F5F5F2] block mb-0.5">Next Operational Steps:</span>
+              <span>1. Master Trainer will assign a dedicated trainer from the assignment queue.<br>2. Front desk records payment in the Payments tab upon collection.</span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="space-y-2 pt-4">
+            <button onclick="navigateTo('scr_client_detail')" class="tap-highlight w-full py-3.5 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-xl text-xs shadow-md">
+              View Client Profile
+            </button>
+            <button onclick="regStep=1; navigateTo('scr_reg_wizard')" class="tap-highlight w-full py-3 bg-[#171719] text-[#F5F5F2] border border-[#303034] font-medium rounded-xl text-xs">
+              Register Another Client
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 11: CLIENT DETAIL & RENEWAL
+    // ----------------------------------------------------
+    function renderClientDetailScreen() {
+      return `
+        <div class="p-5 space-y-4">
+          <!-- Top Bar -->
+          <div class="flex items-center justify-between">
+            <button onclick="navigateTo('scr_client_directory')" class="text-xs text-[#B8B8BF] flex items-center gap-1">
+              ← Directory
+            </button>
+            <span class="text-xs font-mono text-[#7A7A82]">#VY-2026-089</span>
+          </div>
+
+          <!-- Client Profile Header Card -->
+          <div class="bg-[#171719] border border-[#303034] rounded-2xl p-4 flex items-center gap-4">
+            <div class="w-16 h-16 rounded-full bg-[#232327] border-2 border-[#D4AF37] flex items-center justify-center font-bold text-lg text-[#D4AF37]">
+              DS
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <h1 class="text-base font-bold text-[#F5F5F2]">Dev Sharma</h1>
+                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-[#064E3B]/40 text-[#34D399] border border-[#34D399]/30">● Active</span>
+              </div>
+              <p class="text-xs text-[#B8B8BF] font-mono mt-0.5">+91 98765 •••••</p>
+              <p class="text-[11px] text-[#7A7A82] mt-0.5">Quarterly Gold &bull; Valid till 07 Feb 2027</p>
+            </div>
+          </div>
+
+          <!-- Tabs: Overview / Sessions / Payments -->
+          <div class="flex border-b border-[#303034] text-xs">
+            <button class="py-2 px-3 border-b-2 border-[#D4AF37] font-semibold text-[#F5F5F2]">Overview</button>
+            <button class="py-2 px-3 text-[#7A7A82] hover:text-[#B8B8BF]">Sessions (14)</button>
+            <button class="py-2 px-3 text-[#7A7A82] hover:text-[#B8B8BF]">Payments (1)</button>
+          </div>
+
+          <!-- Key Details Grid -->
+          <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5 space-y-2.5 text-xs">
+            <div class="flex justify-between">
+              <span class="text-[#B8B8BF]">Assigned Trainer:</span>
+              <span class="font-semibold text-[#D4AF37]">Kabir Roy (Strength PT)</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[#B8B8BF]">Agreed Price:</span>
+              <span class="font-semibold text-[#F5F5F2]">₹18,000 INR</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[#B8B8BF]">Phone Verified:</span>
+              <span class="text-[#34D399]">✓ OTP Verified (08 Nov)</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[#B8B8BF]">Registered By:</span>
+              <span class="text-[#F5F5F2]">Priya Patel (Front Desk)</span>
+            </div>
+          </div>
+
+          <!-- Quick Operational Actions -->
+          <div class="space-y-2 pt-2">
+            <button onclick="navigateTo('scr_pay_record')" class="tap-highlight w-full py-3 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-xl text-xs flex items-center justify-center gap-2 shadow-sm">
+              <span>💳</span> Record Membership Payment
+            </button>
+            <button onclick="alert('Proposed feature: Membership renewal flow logged in Proposed Specs.')" class="tap-highlight w-full py-2.5 bg-[#171719] text-[#B8B8BF] border border-[#303034] font-medium rounded-xl text-xs flex items-center justify-center gap-2">
+              <span>🔄</span> Renew / Extend Membership (Proposed)
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 12: MASTER-TRAINER HOME
+    // ----------------------------------------------------
+    function renderMasterTrainerHomeScreen() {
+      return `
+        <div class="p-5 space-y-5">
+          <!-- Top Header -->
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-xs text-[#B8B8BF]">Master Trainer Portal</p>
+              <h1 class="text-xl font-bold text-[#F5F5F2]">Arjun Verma</h1>
+            </div>
+            <div class="w-9 h-9 rounded-full bg-[#171719] border border-[#303034] flex items-center justify-center text-xs text-[#D4AF37] font-semibold">
+              MT
+            </div>
+          </div>
+
+          <!-- Primary Action -->
+          <button onclick="navigateTo('scr_mt_queue')" class="tap-highlight w-full py-4 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-2xl flex items-center justify-between px-5 shadow-lg">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-[#0B0B0C] text-[#F5F5F2] flex items-center justify-center text-sm font-bold">🎯</div>
+              <div class="text-left">
+                <span class="block text-sm font-bold">Assign Unallocated Clients</span>
+                <span class="block text-[11px] text-[#55555C]">5 clients waiting in assignment queue</span>
+              </div>
+            </div>
+            <span class="text-lg">➔</span>
+          </button>
+
+          <!-- Metrics Summary -->
+          <div>
+            <h2 class="text-xs font-semibold text-[#B8B8BF] uppercase tracking-wider mb-2.5">Facility Operational Overview</h2>
+            <div class="grid grid-cols-3 gap-2.5">
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3 text-center cursor-pointer" onclick="navigateTo('scr_mt_queue')">
+                <span class="block text-xl font-bold text-[#FBBF24]">5</span>
+                <span class="block text-[11px] text-[#B8B8BF] mt-0.5">Unassigned</span>
+              </div>
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3 text-center">
+                <span class="block text-xl font-bold text-[#34D399]">12/14</span>
+                <span class="block text-[11px] text-[#B8B8BF] mt-0.5">Active Trainers</span>
+              </div>
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3 text-center">
+                <span class="block text-xl font-bold text-[#D4AF37]">34</span>
+                <span class="block text-[11px] text-[#B8B8BF] mt-0.5">Verified Today</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Assignment Activity -->
+          <div>
+            <div class="flex items-center justify-between mb-2.5">
+              <h2 class="text-xs font-semibold text-[#B8B8BF] uppercase tracking-wider">Recent Assignments</h2>
+              <button onclick="navigateTo('scr_mt_queue')" class="text-xs text-[#D4AF37] hover:underline">Full Queue</button>
+            </div>
+
+            <div class="space-y-2">
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3 text-xs flex justify-between items-center">
+                <div>
+                  <span class="font-semibold text-[#F5F5F2] block">Karan Singhania &bull; Quarterly Gold</span>
+                  <span class="text-[11px] text-[#B8B8BF]">Assigned to <strong class="text-[#D4AF37]">Kabir Roy</strong></span>
+                </div>
+                <span class="text-[10px] text-[#7A7A82]">Today, 10:15 AM</span>
+              </div>
+
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3 text-xs flex justify-between items-center">
+                <div>
+                  <span class="font-semibold text-[#F5F5F2] block">Pooja Hegde &bull; Half-Yearly</span>
+                  <span class="text-[11px] text-[#B8B8BF]">Assigned to <strong class="text-[#D4AF37]">Vikram Malhotra</strong></span>
+                </div>
+                <span class="text-[10px] text-[#7A7A82]">Yesterday, 5:40 PM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 13: ASSIGNMENT QUEUE
+    // ----------------------------------------------------
+    function renderAssignmentQueueScreen() {
+      return `
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h1 class="text-lg font-bold text-[#F5F5F2]">Client Assignment Queue</h1>
+            <span class="px-2 py-0.5 rounded bg-[#1F1F23] text-xs font-semibold text-[#D4AF37] border border-[#303034]">5 Pending</span>
+          </div>
+
+          <!-- Queue Tabs -->
+          <div class="flex border-b border-[#303034] text-xs">
+            <button class="py-2 px-3 border-b-2 border-[#D4AF37] font-semibold text-[#F5F5F2]">Unassigned (5)</button>
+            <button class="py-2 px-3 text-[#7A7A82] hover:text-[#B8B8BF]">Assigned (42)</button>
+          </div>
+
+          <!-- Unassigned List -->
+          <div class="space-y-2.5">
+            ${[
+              { name: 'Dev Sharma', phone: '+91 98765 •••••', plan: 'Quarterly Gold', enrolled: '08 Nov, 10:14 AM' },
+              { name: 'Rohit Joshi', phone: '+91 98112 •••••', plan: 'Annual Platinum', enrolled: '08 Nov, 09:20 AM' },
+              { name: 'Meera Sen', phone: '+91 99204 •••••', plan: 'Monthly Core', enrolled: '07 Nov, 06:15 PM' },
+              { name: 'Gaurav Khanna', phone: '+91 98330 •••••', plan: 'Quarterly Gold', enrolled: '07 Nov, 04:30 PM' }
+            ].map(c => `
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5 space-y-2">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h3 class="text-sm font-semibold text-[#F5F5F2]">${c.name}</h3>
+                    <p class="text-[11px] text-[#B8B8BF]">${c.phone} &bull; ${c.plan}</p>
+                    <p class="text-[10px] text-[#7A7A82] mt-0.5">Registered: ${c.enrolled}</p>
+                  </div>
+                  <span class="px-2 py-0.5 rounded text-[10px] bg-[#78350F]/40 text-[#FBBF24] border border-[#FBBF24]/30">Unassigned</span>
+                </div>
+                <div class="pt-2 border-t border-[#26262B] flex justify-end">
+                  <button onclick="navigateTo('scr_mt_assign')" class="tap-highlight px-3 py-1.5 bg-[#F5F5F2] text-[#0B0B0C] text-xs font-semibold rounded-lg shadow-sm">
+                    Assign Trainer ➔
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 14: ASSIGN TRAINER
+    // ----------------------------------------------------
+    function renderAssignTrainerScreen() {
+      return `
+        <div class="p-5 flex-1 flex flex-col justify-between">
+          <div>
+            <button onclick="navigateTo('scr_mt_queue')" class="text-xs text-[#B8B8BF] mb-3 flex items-center gap-1">
+              ← Queue
+            </button>
+            <h1 class="text-xl font-bold text-[#F5F5F2]">Select Trainer</h1>
+            <p class="text-xs text-[#B8B8BF] mt-0.5">Assigning client <strong class="text-[#F5F5F2]">Dev Sharma (Quarterly Gold)</strong></p>
+
+            <!-- Search Trainers -->
+            <div class="my-3.5">
+              <input type="text" placeholder="Search active trainers..." class="w-full px-3.5 py-2.5 bg-[#171719] border border-[#303034] rounded-xl text-xs text-[#F5F5F2]">
+            </div>
+
+            <!-- Trainer List Options -->
+            <div class="space-y-2.5">
+              <div onclick="navigateTo('scr_mt_confirm')" class="tap-highlight p-3 rounded-xl bg-[#1F1F23] border border-[#D4AF37] cursor-pointer flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-[#2A2A30] border border-[#303034] flex items-center justify-center font-bold text-xs text-[#D4AF37]">KR</div>
+                  <div>
+                    <h3 class="text-sm font-semibold text-[#F5F5F2]">Kabir Roy</h3>
+                    <p class="text-[11px] text-[#B8B8BF]">Strength & Hypertrophy &bull; 8 Clients</p>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded text-[10px] bg-[#064E3B]/40 text-[#34D399]">Available</span>
+              </div>
+
+              <div onclick="navigateTo('scr_mt_confirm')" class="tap-highlight p-3 rounded-xl bg-[#171719] border border-[#303034] cursor-pointer flex justify-between items-center hover:border-[#45454B]">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-[#2A2A30] border border-[#303034] flex items-center justify-center font-bold text-xs text-[#F5F5F2]">SR</div>
+                  <div>
+                    <h3 class="text-sm font-semibold text-[#F5F5F2]">Sneha Rao</h3>
+                    <p class="text-[11px] text-[#B8B8BF]">Functional & HIIT &bull; 6 Clients</p>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded text-[10px] bg-[#064E3B]/40 text-[#34D399]">Available</span>
+              </div>
+
+              <div class="p-3 rounded-xl bg-[#171719] border border-[#303034] opacity-60 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-[#2A2A30] border border-[#303034] flex items-center justify-center font-bold text-xs text-[#7A7A82]">VM</div>
+                  <div>
+                    <h3 class="text-sm font-semibold text-[#F5F5F2]">Vikram Malhotra</h3>
+                    <p class="text-[11px] text-[#B8B8BF]">Athletic Performance &bull; 12 Clients (Cap)</p>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded text-[10px] bg-[#78350F]/40 text-[#FBBF24]">At Capacity</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4">
+            <button onclick="navigateTo('scr_mt_confirm')" class="tap-highlight w-full py-3.5 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-xl text-xs shadow-md">
+              Proceed to Confirmation
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 15: ASSIGNMENT CONFIRMATION
+    // ----------------------------------------------------
+    function renderAssignmentConfirmationScreen() {
+      return `
+        <div class="p-6 flex-1 flex flex-col justify-between text-center">
+          <div>
+            <div class="w-14 h-14 rounded-full bg-[#1F1F23] border border-[#D4AF37] text-[#D4AF37] flex items-center justify-center text-2xl mx-auto mb-4">
+              🎯
+            </div>
+            <h1 class="text-xl font-bold text-[#F5F5F2]">Confirm Client Assignment</h1>
+            <p class="text-xs text-[#B8B8BF] mt-1">Review operational binding before committing to database.</p>
+
+            <div class="bg-[#171719] border border-[#303034] rounded-2xl p-4 text-left my-6 space-y-3">
+              <div class="flex justify-between items-center border-b border-[#26262B] pb-2">
+                <span class="text-xs text-[#B8B8BF]">Client</span>
+                <span class="text-xs font-bold text-[#F5F5F2]">Dev Sharma</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-[#26262B] pb-2">
+                <span class="text-xs text-[#B8B8BF]">Assigned Trainer</span>
+                <span class="text-xs font-bold text-[#D4AF37]">Kabir Roy (Strength)</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-[#26262B] pb-2">
+                <span class="text-xs text-[#B8B8BF]">Effective Date</span>
+                <span class="text-xs text-[#F5F5F2]">Immediate (08 Nov 2026)</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-[#B8B8BF]">Authorized By</span>
+                <span class="text-xs text-[#F5F5F2]">Arjun Verma (Master Trainer)</span>
+              </div>
+            </div>
+
+            <p class="text-[11px] text-[#7A7A82] text-left">
+              🔒 After confirmation, this client will immediately appear in Kabir Roy's "My Clients" roster for daily session OTP verification.
+            </p>
+          </div>
+
+          <div class="space-y-2 pt-4">
+            <button onclick="navigateTo('scr_mt_queue'); alert('Assignment committed to database successfully.')" class="tap-highlight w-full py-3.5 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-xl text-xs shadow-md">
+              Confirm Assignment
+            </button>
+            <button onclick="navigateTo('scr_mt_assign')" class="tap-highlight w-full py-3 bg-[#171719] text-[#B8B8BF] border border-[#303034] font-medium rounded-xl text-xs">
+              Change Trainer
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 16: REASSIGN TRAINER
+    // ----------------------------------------------------
+    function renderReassignTrainerScreen() {
+      return `
+        <div class="p-5 flex-1 flex flex-col justify-between">
+          <div>
+            <button onclick="navigateTo('scr_mt_queue')" class="text-xs text-[#B8B8BF] mb-3 flex items-center gap-1">
+              ← Back
+            </button>
+            <h1 class="text-xl font-bold text-[#F5F5F2]">Reassign Trainer</h1>
+            <p class="text-xs text-[#B8B8BF] mt-0.5">Client: <strong class="text-[#F5F5F2]">Dev Sharma</strong></p>
+
+            <div class="space-y-3 my-4">
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3 text-xs">
+                <span class="text-[#B8B8BF] block">Current Trainer</span>
+                <span class="font-bold text-[#F5F5F2] text-sm">Kabir Roy</span>
+              </div>
+
+              <div>
+                <label class="block text-xs font-medium text-[#B8B8BF] mb-1">Proposed Replacement Trainer</label>
+                <select class="w-full px-3 py-2.5 bg-[#171719] border border-[#303034] rounded-xl text-xs text-[#F5F5F2]">
+                  <option>Sneha Rao (Functional - 6 clients)</option>
+                  <option>Vikram Malhotra (Strength - 12 clients)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-medium text-[#B8B8BF] mb-1">Reason for Reassignment</label>
+                <select class="w-full px-3 py-2.5 bg-[#171719] border border-[#303034] rounded-xl text-xs text-[#F5F5F2]">
+                  <option>Trainer Schedule Reallocation</option>
+                  <option>Client Specialization Request</option>
+                  <option>Medical / Emergency Leave</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="p-3 bg-[#0B0B0C] border border-[#303034] rounded-xl text-xs text-[#B8B8BF]">
+              <span>⚠️ <strong>Audit Safeguard:</strong> Previous assignment records and historical session verifications are preserved for accounting and revenue share calculation.</span>
+            </div>
+          </div>
+
+          <div class="pt-4">
+            <button onclick="navigateTo('scr_mt_queue'); alert('Reassignment recorded with audit timestamp.')" class="tap-highlight w-full py-3.5 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-xl text-xs shadow-md">
+              Commit Reassignment
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 17: TRAINER DIRECTORY & PROFILE
+    // ----------------------------------------------------
+    function renderTrainerDirectoryScreen() {
+      return `
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h1 class="text-lg font-bold text-[#F5F5F2]">Trainer Roster</h1>
+            <span class="text-xs text-[#B8B8BF]">12 Active</span>
+          </div>
+
+          <div class="space-y-2.5">
+            ${[
+              { name: 'Kabir Roy', clients: 8, sessions: 142, status: 'Active', share: '50% Baseline' },
+              { name: 'Sneha Rao', clients: 6, sessions: 98, status: 'Active', share: '50% Baseline' },
+              { name: 'Vikram Malhotra', clients: 12, sessions: 210, status: 'Active', share: '50% Baseline' },
+              { name: 'Aditi Nair', clients: 5, sessions: 76, status: 'Active', share: '50% Baseline' }
+            ].map(t => `
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5 space-y-2">
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-[#232327] border border-[#303034] flex items-center justify-center font-bold text-xs text-[#D4AF37]">
+                      ${t.name.split(' ').map(n=>n[0]).join('')}
+                    </div>
+                    <div>
+                      <h3 class="text-sm font-semibold text-[#F5F5F2]">${t.name}</h3>
+                      <p class="text-[11px] text-[#B8B8BF]">${t.clients} Assigned Clients &bull; ${t.sessions} Verified Sessions</p>
+                    </div>
+                  </div>
+                  <span class="px-2 py-0.5 rounded text-[10px] bg-[#064E3B]/40 text-[#34D399]">● ${t.status}</span>
+                </div>
+                <div class="pt-2 border-t border-[#26262B] flex justify-between items-center text-xs">
+                  <span class="text-[#7A7A82]">Applied Share: <strong class="text-[#D4AF37]">${t.share}</strong></span>
+                  <button onclick="navigateTo('scr_mt_reassign')" class="text-xs text-[#B8B8BF] hover:text-[#F5F5F2]">Manage Clients ➔</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 18: TRAINER HOME
+    // ----------------------------------------------------
+    function renderTrainerHomeScreen() {
+      return `
+        <div class="p-5 space-y-5">
+          <!-- Top Trainer Bar -->
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-xs text-[#B8B8BF]">Trainer Workspace</p>
+              <h1 class="text-xl font-bold text-[#F5F5F2]">Kabir Roy</h1>
+            </div>
+            <div class="w-9 h-9 rounded-full bg-[#171719] border border-[#303034] flex items-center justify-center text-xs text-[#D4AF37] font-semibold">
+              TR
+            </div>
+          </div>
+
+          <!-- Primary Operational Action -->
+          <button onclick="navigateTo('scr_tr_start_session')" class="tap-highlight w-full py-4 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-2xl flex items-center justify-between px-5 shadow-lg shadow-black/40">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-[#0B0B0C] text-[#F5F5F2] flex items-center justify-center text-sm font-bold">⚡</div>
+              <div class="text-left">
+                <span class="block text-sm font-bold">Verify Client Session</span>
+                <span class="block text-[11px] text-[#55555C]">OTP attendance confirmation</span>
+              </div>
+            </div>
+            <span class="text-lg">➔</span>
+          </button>
+
+          <!-- Today's Stats -->
+          <div class="grid grid-cols-2 gap-2.5">
+            <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5">
+              <span class="block text-xl font-bold text-[#F5F5F2]">3</span>
+              <span class="block text-xs text-[#B8B8BF] mt-0.5">Verified Today</span>
+            </div>
+            <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5">
+              <span class="block text-xl font-bold text-[#D4AF37]">8</span>
+              <span class="block text-xs text-[#B8B8BF] mt-0.5">Assigned Clients</span>
+            </div>
+          </div>
+
+          <!-- Permitted Earnings Shortcut (Authorized) -->
+          <div class="bg-[#1F1F23] border border-[#303034] rounded-xl p-3.5 flex justify-between items-center">
+            <div>
+              <span class="text-xs text-[#B8B8BF] block">Current Accrued Share (MTD)</span>
+              <span class="text-lg font-bold text-[#D4AF37]">₹48,000 <span class="text-xs font-normal text-[#B8B8BF]">(50% Baseline)</span></span>
+            </div>
+            <button onclick="navigateTo('scr_own_earnings_detail')" class="px-2.5 py-1.5 rounded-lg bg-[#2A2A30] text-xs font-medium text-[#F5F5F2] border border-[#303034]">
+              View Details
+            </button>
+          </div>
+
+          <!-- Today's Upcoming Assigned Clients -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-xs font-semibold text-[#B8B8BF] uppercase tracking-wider">Assigned Clients</h2>
+              <button onclick="navigateTo('scr_tr_myclients')" class="text-xs text-[#D4AF37] hover:underline">View All (8)</button>
+            </div>
+
+            <div class="space-y-2">
+              <div onclick="navigateTo('scr_tr_start_session')" class="tap-highlight bg-[#171719] border border-[#303034] rounded-xl p-3 flex justify-between items-center cursor-pointer">
+                <div>
+                  <h3 class="text-sm font-semibold text-[#F5F5F2]">Dev Sharma</h3>
+                  <p class="text-[11px] text-[#B8B8BF]">+91 98765 ••••• &bull; Quarterly Gold</p>
+                </div>
+                <button class="px-2.5 py-1 bg-[#F5F5F2] text-[#0B0B0C] rounded-lg text-xs font-semibold">Start</button>
+              </div>
+
+              <div onclick="navigateTo('scr_tr_start_session')" class="tap-highlight bg-[#171719] border border-[#303034] rounded-xl p-3 flex justify-between items-center cursor-pointer">
+                <div>
+                  <h3 class="text-sm font-semibold text-[#F5F5F2]">Karan Singhania</h3>
+                  <p class="text-[11px] text-[#B8B8BF]">+91 98331 ••••• &bull; Last session: Yesterday</p>
+                </div>
+                <button class="px-2.5 py-1 bg-[#F5F5F2] text-[#0B0B0C] rounded-lg text-xs font-semibold">Start</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 19: MY CLIENTS
+    // ----------------------------------------------------
+    function renderTrainerMyClientsScreen() {
+      return `
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h1 class="text-lg font-bold text-[#F5F5F2]">My Assigned Clients</h1>
+            <span class="text-xs text-[#B8B8BF]">8 Clients</span>
+          </div>
+
+          <div class="relative">
+            <input type="text" placeholder="Search assigned clients..." class="w-full px-3.5 py-2.5 bg-[#171719] border border-[#303034] rounded-xl text-xs text-[#F5F5F2]">
+          </div>
+
+          <div class="space-y-2.5">
+            ${[
+              { name: 'Dev Sharma', phone: '+91 98765 •••••', last: 'Today - Pending' },
+              { name: 'Karan Singhania', phone: '+91 98331 •••••', last: '07 Nov, 6:30 PM' },
+              { name: 'Sahil Kapoor', phone: '+91 98210 •••••', last: '06 Nov, 7:00 AM' },
+              { name: 'Tarun Varma', phone: '+91 99100 •••••', last: '05 Nov, 8:15 AM' }
+            ].map(c => `
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-[#232327] border border-[#303034] flex items-center justify-center font-bold text-xs text-[#D4AF37]">
+                    ${c.name.split(' ').map(n=>n[0]).join('')}
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-semibold text-[#F5F5F2]">${c.name}</h3>
+                    <p class="text-[11px] text-[#B8B8BF]">${c.phone}</p>
+                    <p class="text-[10px] text-[#7A7A82] mt-0.5">Last Attendance: ${c.last}</p>
+                  </div>
+                </div>
+                <button onclick="navigateTo('scr_tr_start_session')" class="tap-highlight px-3 py-1.5 bg-[#F5F5F2] text-[#0B0B0C] rounded-lg text-xs font-semibold">
+                  Verify Session
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 20: START SESSION
+    // ----------------------------------------------------
+    function renderStartSessionScreen() {
+      return `
+        <div class="p-5 flex-1 flex flex-col justify-between">
+          <div>
+            <button onclick="navigateTo('scr_tr_home')" class="text-xs text-[#B8B8BF] mb-3 flex items-center gap-1">
+              ← Back
+            </button>
+            <h1 class="text-xl font-bold text-[#F5F5F2]">Initiate Session Attendance</h1>
+            <p class="text-xs text-[#B8B8BF] mt-0.5">Enter client registered phone or select assigned client.</p>
+
+            <div class="space-y-4 my-4">
+              <div>
+                <label class="block text-xs font-medium text-[#B8B8BF] mb-1.5">Registered Client Mobile Number</label>
+                <div class="flex gap-2">
+                  <span class="px-3.5 py-3 bg-[#171719] border border-[#303034] rounded-xl text-sm text-[#F5F5F2] font-mono select-none">+91</span>
+                  <input type="tel" value="9876543210" class="flex-1 px-4 py-3 bg-[#171719] border border-[#303034] rounded-xl text-sm text-[#F5F5F2] font-mono focus:border-[#D4AF37] focus:outline-none">
+                </div>
+              </div>
+
+              <!-- Eligibility Check Results Card -->
+              <div class="bg-[#171719] border border-[#303034] rounded-2xl p-4 space-y-2.5">
+                <div class="flex items-center justify-between border-b border-[#26262B] pb-2">
+                  <span class="text-xs text-[#B8B8BF]">Client</span>
+                  <span class="text-sm font-bold text-[#F5F5F2]">Dev Sharma</span>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-[#B8B8BF]">Membership Status</span>
+                  <span class="text-[#34D399] font-medium">✓ Active (64 days left)</span>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-[#B8B8BF]">Trainer Assignment</span>
+                  <span class="text-[#34D399] font-medium">✓ Assigned to Kabir Roy</span>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-[#B8B8BF]">Today's Status</span>
+                  <span class="text-[#FBBF24] font-medium">⏳ No session locked yet</span>
+                </div>
+              </div>
+
+              <div class="p-3 bg-[#0B0B0C] border border-[#303034] rounded-xl text-xs text-[#B8B8BF]">
+                <span>ℹ️ Pressing "Send Session OTP" will SMS an instantaneous 6-digit attendance code to the client. The trainer will enter the code upon confirmation.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4">
+            <button onclick="navigateTo('scr_tr_session_otp')" class="tap-highlight w-full py-3.5 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-xl text-xs shadow-md">
+              Send Session OTP ➔
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 21: SESSION OTP VERIFICATION
+    // ----------------------------------------------------
+    function renderSessionOtpScreen() {
+      return `
+        <div class="p-6 flex-1 flex flex-col justify-between">
+          <div>
+            <button onclick="navigateTo('scr_tr_start_session')" class="text-xs text-[#B8B8BF] mb-4 flex items-center gap-1">
+              ← Back
+            </button>
+            <h1 class="text-2xl font-bold text-[#F5F5F2]">Enter Session OTP</h1>
+            <p class="text-xs text-[#B8B8BF] mt-1">
+              Client: <strong class="text-[#F5F5F2]">Dev Sharma</strong> &bull; Masked: <span class="font-mono text-[#F5F5F2]">+91 98765 •••••</span>
+            </p>
+            <p class="text-[11px] text-[#7A7A82] mt-0.5">Ask client for the OTP received on their phone.</p>
+
+            <div class="my-8">
+              <div class="flex justify-between gap-2 max-w-xs mx-auto">
+                <input type="text" maxlength="1" value="7" class="w-12 h-14 bg-[#171719] border-2 border-[#D4AF37] rounded-xl text-center text-xl font-bold text-[#F5F5F2] focus:outline-none">
+                <input type="text" maxlength="1" value="1" class="w-12 h-14 bg-[#171719] border-2 border-[#D4AF37] rounded-xl text-center text-xl font-bold text-[#F5F5F2] focus:outline-none">
+                <input type="text" maxlength="1" value="3" class="w-12 h-14 bg-[#171719] border-2 border-[#D4AF37] rounded-xl text-center text-xl font-bold text-[#F5F5F2] focus:outline-none">
+                <input type="text" maxlength="1" value="5" class="w-12 h-14 bg-[#171719] border-2 border-[#D4AF37] rounded-xl text-center text-xl font-bold text-[#F5F5F2] focus:outline-none">
+                <input type="text" maxlength="1" value="9" class="w-12 h-14 bg-[#171719] border-2 border-[#D4AF37] rounded-xl text-center text-xl font-bold text-[#F5F5F2] focus:outline-none">
+                <input type="text" maxlength="1" value="2" class="w-12 h-14 bg-[#171719] border-2 border-[#D4AF37] rounded-xl text-center text-xl font-bold text-[#F5F5F2] focus:outline-none">
+              </div>
+
+              <div class="text-center mt-5">
+                <span class="text-xs font-mono text-[#B8B8BF]">Session OTP valid for 04:30</span>
+                <div class="mt-2">
+                  <button onclick="alert('Resent session OTP to client mobile.')" class="text-xs text-[#D4AF37] hover:underline">
+                    Resend OTP
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3 bg-[#171719] border border-[#303034] rounded-xl text-xs text-[#B8B8BF]">
+              <span>🔒 <strong>Lock Policy:</strong> Successful verification immediately locks and timestamps today's attendance record. Once locked, records are immutable.</span>
+            </div>
+          </div>
+
+          <div class="pt-4">
+            <button onclick="navigateTo('scr_tr_session_verified')" class="tap-highlight w-full py-4 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-xl text-sm shadow-md">
+              Verify Attendance & Lock Session
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 22: SESSION VERIFIED (LOCKED)
+    // ----------------------------------------------------
+    function renderSessionVerifiedScreen() {
+      return `
+        <div class="p-6 flex-1 flex flex-col justify-between text-center">
+          <div class="pt-6">
+            <div class="w-16 h-16 rounded-full bg-[#064E3B] border border-[#34D399] text-[#34D399] flex items-center justify-center text-3xl mx-auto mb-4">
+              ✓
+            </div>
+            
+            <h1 class="text-2xl font-bold text-[#F5F5F2]">Attendance Verified</h1>
+            <p class="text-xs text-[#B8B8BF] mt-1">Daily session attendance successfully recorded</p>
+
+            <div class="bg-[#171719] border border-[#303034] rounded-2xl p-4 text-left my-6 space-y-3">
+              <div class="flex justify-between items-center border-b border-[#26262B] pb-2">
+                <span class="text-xs text-[#B8B8BF]">Client</span>
+                <span class="text-sm font-bold text-[#F5F5F2]">Dev Sharma</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-[#26262B] pb-2">
+                <span class="text-xs text-[#B8B8BF]">Trainer</span>
+                <span class="text-xs font-semibold text-[#D4AF37]">Kabir Roy</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-[#26262B] pb-2">
+                <span class="text-xs text-[#B8B8BF]">Verification Time</span>
+                <span class="text-xs font-mono text-[#F5F5F2]">08 Nov 2026, 11:15 AM</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-[#B8B8BF]">Audit Status</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-[#064E3B]/40 text-[#34D399] border border-[#34D399]/30">
+                  🔒 Record Locked & Tamper-Proof
+                </span>
+              </div>
+            </div>
+
+            <div class="p-3 bg-[#0B0B0C] border border-[#303034] rounded-xl text-xs text-[#B8B8BF] text-left">
+              <span>Note: Verification marks attendance for today's session. Duplicate submissions for today are blocked.</span>
+            </div>
+          </div>
+
+          <div class="space-y-2 pt-4">
+            <button onclick="navigateTo('scr_tr_home')" class="tap-highlight w-full py-3.5 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-xl text-xs shadow-md">
+              Return to Trainer Home
+            </button>
+            <button onclick="navigateTo('scr_tr_history')" class="tap-highlight w-full py-3 bg-[#171719] text-[#B8B8BF] border border-[#303034] font-medium rounded-xl text-xs">
+              View Verified Sessions History
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 23: SESSION HISTORY
+    // ----------------------------------------------------
+    function renderSessionHistoryScreen() {
+      return `
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h1 class="text-lg font-bold text-[#F5F5F2]">Session History</h1>
+            <span class="text-xs text-[#B8B8BF]">All Verified Records</span>
+          </div>
+
+          <!-- Date Filter Pills -->
+          <div class="flex gap-2 text-xs">
+            <button class="px-3 py-1 rounded-full bg-[#F5F5F2] text-[#0B0B0C] font-semibold">Today</button>
+            <button class="px-3 py-1 rounded-full bg-[#171719] text-[#B8B8BF] border border-[#303034]">This Week</button>
+            <button class="px-3 py-1 rounded-full bg-[#171719] text-[#B8B8BF] border border-[#303034]">November 2026</button>
+          </div>
+
+          <div class="space-y-2.5">
+            ${[
+              { client: 'Dev Sharma', time: 'Today, 11:15 AM', trainer: 'Kabir Roy', id: '#SES-8901' },
+              { client: 'Sahil Kapoor', time: 'Today, 09:30 AM', trainer: 'Kabir Roy', id: '#SES-8900' },
+              { client: 'Karan Singhania', time: 'Today, 07:45 AM', trainer: 'Kabir Roy', id: '#SES-8899' },
+              { client: 'Tarun Varma', time: 'Yesterday, 06:10 PM', trainer: 'Kabir Roy', id: '#SES-8895' }
+            ].map(s => `
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3 flex justify-between items-center">
+                <div>
+                  <h3 class="text-sm font-semibold text-[#F5F5F2]">${s.client}</h3>
+                  <p class="text-[11px] text-[#B8B8BF] font-mono">${s.time}</p>
+                  <p class="text-[10px] text-[#7A7A82] mt-0.5">Trainer: ${s.trainer} &bull; ${s.id}</p>
+                </div>
+                <div class="text-right">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-[#064E3B]/40 text-[#34D399] border border-[#34D399]/30">
+                    🔒 Locked
+                  </span>
+                  <button onclick="alert('Correction request affordance sent to Administrator for review.')" class="block text-[10px] text-[#D4AF37] hover:underline mt-1.5">
+                    Request Correction
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 24: PAYMENT LIST
+    // ----------------------------------------------------
+    function renderPaymentListScreen() {
+      return `
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h1 class="text-lg font-bold text-[#F5F5F2]">Payment Registry</h1>
+            <button onclick="navigateTo('scr_pay_record')" class="tap-highlight px-3 py-1.5 bg-[#F5F5F2] text-[#0B0B0C] rounded-lg text-xs font-semibold">
+              + Record Payment
+            </button>
+          </div>
+
+          <div class="relative">
+            <input type="text" placeholder="Search by client or payment ID..." class="w-full px-3.5 py-2.5 bg-[#171719] border border-[#303034] rounded-xl text-xs text-[#F5F5F2]">
+          </div>
+
+          <div class="space-y-2.5">
+            ${[
+              { id: '#PAY-9921', client: 'Dev Sharma', trainer: 'Kabir Roy', amount: 18000, share: 9000, date: '08 Nov 2026', mode: 'UPI' },
+              { id: '#PAY-9920', client: 'Ananya Kapoor', trainer: 'Sneha Rao', amount: 60000, share: 30000, date: '07 Nov 2026', mode: 'Bank Transfer' },
+              { id: '#PAY-9919', client: 'Pooja Hegde', trainer: 'Vikram Malhotra', amount: 32000, share: 16000, date: '06 Nov 2026', mode: 'Credit Card' },
+              { id: '#PAY-9918', client: 'Karan Singhania', trainer: 'Kabir Roy', amount: 18000, share: 9000, date: '05 Nov 2026', mode: 'UPI' }
+            ].map(p => `
+              <div onclick="navigateTo('scr_pay_detail')" class="tap-highlight bg-[#171719] border border-[#303034] rounded-xl p-3.5 cursor-pointer hover:border-[#45454B] space-y-2">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h3 class="text-sm font-semibold text-[#F5F5F2]">${p.client}</h3>
+                    <p class="text-[11px] text-[#B8B8BF]">${p.id} &bull; ${p.mode} &bull; ${p.date}</p>
+                  </div>
+                  <div class="text-right">
+                    <span class="text-sm font-bold text-[#F5F5F2]">₹${p.amount.toLocaleString('en-IN')}</span>
+                    <span class="block text-[10px] text-[#34D399]">● Confirmed</span>
+                  </div>
+                </div>
+                <div class="pt-2 border-t border-[#26262B] flex justify-between items-center text-xs">
+                  <span class="text-[#7A7A82]">Trainer: <strong class="text-[#D4AF37]">${p.trainer}</strong></span>
+                  <span class="text-[#B8B8BF]">Accrued 50% Share: <strong class="text-[#D4AF37]">₹${p.share.toLocaleString('en-IN')}</strong></span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 25: RECORD PAYMENT (50% BASELINE)
+    // ----------------------------------------------------
+    function renderRecordPaymentScreen() {
+      return `
+        <div class="p-5 flex-1 flex flex-col justify-between">
+          <div>
+            <button onclick="navigateTo('scr_pay_list')" class="text-xs text-[#B8B8BF] mb-3 flex items-center gap-1">
+              ← Payment Registry
+            </button>
+            <h1 class="text-xl font-bold text-[#F5F5F2]">Record External Payment</h1>
+            <p class="text-xs text-[#B8B8BF] mt-0.5">Log funds collected at desk & compute trainer revenue share.</p>
+
+            <div class="space-y-3.5 my-4">
+              <!-- Client Selector -->
+              <div>
+                <label class="block text-xs font-medium text-[#B8B8BF] mb-1">Select Client *</label>
+                <select class="w-full px-3 py-2.5 bg-[#171719] border border-[#303034] rounded-xl text-xs text-[#F5F5F2]">
+                  <option selected>Dev Sharma (+91 98765 •••••) - Quarterly Gold</option>
+                  <option>Ananya Kapoor (+91 98201 •••••) - Annual Platinum</option>
+                  <option>Karan Singhania (+91 98331 •••••) - Quarterly Gold</option>
+                </select>
+              </div>
+
+              <!-- Associated Trainer -->
+              <div>
+                <label class="block text-xs font-medium text-[#B8B8BF] mb-1">Associated Trainer (For Revenue Share)</label>
+                <div class="p-2.5 bg-[#171719] border border-[#303034] rounded-xl flex justify-between items-center text-xs">
+                  <span class="font-semibold text-[#D4AF37]">Kabir Roy (Strength)</span>
+                  <span class="text-[10px] text-[#7A7A82]">Auto-Linked</span>
+                </div>
+              </div>
+
+              <!-- Collected Amount -->
+              <div>
+                <label class="block text-xs font-medium text-[#B8B8BF] mb-1">Amount Actually Collected in INR *</label>
+                <div class="relative">
+                  <span class="absolute left-3.5 top-2.5 text-xs text-[#B8B8BF] font-bold">₹</span>
+                  <input type="number" id="pay-amount-input" value="18000" oninput="updateTrainerShareCalc(this.value)" class="w-full pl-8 pr-4 py-2.5 bg-[#171719] border border-[#303034] rounded-xl text-sm font-bold text-[#F5F5F2] focus:border-[#D4AF37] focus:outline-none">
+                </div>
+              </div>
+
+              <!-- Payment Mode & Reference -->
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-xs font-medium text-[#B8B8BF] mb-1">Payment Mode</label>
+                  <select class="w-full px-3 py-2 bg-[#171719] border border-[#303034] rounded-xl text-xs text-[#F5F5F2]">
+                    <option>UPI / QR Scan</option>
+                    <option>Cash at Desk</option>
+                    <option>Credit / Debit Card</option>
+                    <option>Direct Bank NEFT</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-[#B8B8BF] mb-1">Txn / Ref No.</label>
+                  <input type="text" value="UPI/6120984" class="w-full px-3 py-2 bg-[#171719] border border-[#303034] rounded-xl text-xs text-[#F5F5F2]">
+                </div>
+              </div>
+
+              <!-- Computed Trainer Share (Baseline 50%) -->
+              <div class="bg-[#1F1F23] border border-[#303034] rounded-xl p-3.5 space-y-2 text-xs">
+                <div class="flex justify-between items-center">
+                  <span class="text-[#B8B8BF]">Applicable Trainer Share %:</span>
+                  <span class="px-2 py-0.5 rounded bg-[#232327] border border-[#303034] text-[#D4AF37] font-bold">50% (Standard Baseline)</span>
+                </div>
+                <div class="border-t border-[#26262B] pt-2 flex justify-between items-center">
+                  <span class="font-medium text-[#F5F5F2]">Calculated Trainer Share:</span>
+                  <span class="text-base font-bold text-[#D4AF37]" id="calculated-share-display">₹9,000 INR</span>
+                </div>
+                <p class="text-[10px] text-[#7A7A82] mt-0.5">Share % is read-only for front desk. Only owner/admin can modify compensation rules.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4">
+            <button onclick="navigateTo('scr_pay_review')" class="tap-highlight w-full py-3.5 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-xl text-xs shadow-md">
+              Review Payment Entry ➔
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateTrainerShareCalc(val) {
+      const num = parseFloat(val) || 0;
+      const share = Math.round(num * 0.5);
+      const disp = document.getElementById('calculated-share-display');
+      if (disp) disp.innerText = `₹${share.toLocaleString('en-IN')} INR`;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 26: REVIEW PAYMENT
+    // ----------------------------------------------------
+    function renderReviewPaymentScreen() {
+      return `
+        <div class="p-6 flex-1 flex flex-col justify-between text-center">
+          <div>
+            <div class="w-14 h-14 rounded-full bg-[#1F1F23] border border-[#D4AF37] text-[#D4AF37] flex items-center justify-center text-2xl mx-auto mb-4">
+              💳
+            </div>
+            <h1 class="text-xl font-bold text-[#F5F5F2]">Review Payment Record</h1>
+            <p class="text-xs text-[#B8B8BF] mt-1">Confirm collection & share snapshot before committing.</p>
+
+            <div class="bg-[#171719] border border-[#303034] rounded-2xl p-4 text-left my-5 space-y-3">
+              <div class="flex justify-between items-center border-b border-[#26262B] pb-2">
+                <span class="text-xs text-[#B8B8BF]">Client</span>
+                <span class="text-xs font-bold text-[#F5F5F2]">Dev Sharma</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-[#26262B] pb-2">
+                <span class="text-xs text-[#B8B8BF]">Amount Collected</span>
+                <span class="text-sm font-bold text-[#F5F5F2]">₹18,000 INR</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-[#26262B] pb-2">
+                <span class="text-xs text-[#B8B8BF]">Associated Trainer</span>
+                <span class="text-xs font-semibold text-[#D4AF37]">Kabir Roy</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-[#26262B] pb-2">
+                <span class="text-xs text-[#B8B8BF]">Applied Rate Snapshot</span>
+                <span class="text-xs font-mono text-[#F5F5F2]">50% (Standard)</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-[#B8B8BF]">Accrued Trainer Share</span>
+                <span class="text-sm font-bold text-[#D4AF37]">₹9,000 INR</span>
+              </div>
+            </div>
+
+            <div class="p-3 bg-[#0B0B0C] border border-[#303034] rounded-xl text-xs text-[#B8B8BF] text-left">
+              <span>⚠️ <strong>Audit Rule:</strong> This action records funds collected offline. Does NOT trigger a payment gateway. Does NOT mark trainer share as disbursed.</span>
+            </div>
+          </div>
+
+          <div class="space-y-2 pt-4">
+            <button onclick="navigateTo('scr_pay_detail')" class="tap-highlight w-full py-3.5 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-xl text-xs shadow-md">
+              Confirm & Store Payment Record
+            </button>
+            <button onclick="navigateTo('scr_pay_record')" class="tap-highlight w-full py-3 bg-[#171719] text-[#B8B8BF] border border-[#303034] font-medium rounded-xl text-xs">
+              Edit Details
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 27: PAYMENT DETAIL & AUDIT
+    // ----------------------------------------------------
+    function renderPaymentDetailScreen() {
+      return `
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <button onclick="navigateTo('scr_pay_list')" class="text-xs text-[#B8B8BF] flex items-center gap-1">
+              ← Payment Registry
+            </button>
+            <span class="text-xs font-mono text-[#D4AF37]">#PAY-9921</span>
+          </div>
+
+          <div class="bg-[#171719] border border-[#303034] rounded-2xl p-4 text-center">
+            <span class="text-xs text-[#B8B8BF]">Total Collected</span>
+            <h1 class="text-2xl font-bold text-[#F5F5F2] my-1">₹18,000.00</h1>
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#064E3B]/40 text-[#34D399] border border-[#34D399]/30">
+              ✓ Confirmed Record
+            </span>
+          </div>
+
+          <!-- Audit Ledger Details -->
+          <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5 space-y-2.5 text-xs">
+            <div class="flex justify-between">
+              <span class="text-[#B8B8BF]">Client:</span>
+              <span class="font-semibold text-[#F5F5F2]">Dev Sharma (#VY-2026-089)</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[#B8B8BF]">Associated Trainer:</span>
+              <span class="font-semibold text-[#D4AF37]">Kabir Roy</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[#B8B8BF]">Applied Percentage Snapshot:</span>
+              <span class="font-mono text-[#F5F5F2]">50%</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[#B8B8BF]">Accrued Trainer Share:</span>
+              <span class="font-bold text-[#D4AF37]">₹9,000.00 (Accrued)</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[#B8B8BF]">Payment Mode:</span>
+              <span class="text-[#F5F5F2]">UPI / QR (Txn: UPI/6120984)</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[#B8B8BF]">Recorded By:</span>
+              <span class="text-[#F5F5F2]">Priya Patel (Front Desk)</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[#B8B8BF]">Timestamp:</span>
+              <span class="font-mono text-[#F5F5F2]">08 Nov 2026, 11:22 AM</span>
+            </div>
+          </div>
+
+          <div class="p-3 bg-[#0B0B0C] border border-[#303034] rounded-xl text-xs text-[#B8B8BF]">
+            <span>ℹ️ <strong>Accounting Note:</strong> Trainer share is recorded as an accrued liability for monthly/six-month settlement. Not marked as disbursed.</span>
+          </div>
+
+          <div class="pt-2">
+            <button onclick="alert('Audited correction request dispatched to Owner for review.')" class="tap-highlight w-full py-2.5 bg-[#171719] text-[#F87171] border border-[#F87171]/30 font-medium rounded-xl text-xs">
+              Request Audited Reversal (Admin Only)
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 28: OWNER OVERVIEW
+    // ----------------------------------------------------
+    function renderOwnerOverviewScreen() {
+      return `
+        <div class="p-5 space-y-5">
+          <!-- Top Bar -->
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-xs text-[#B8B8BF]">Executive Administration</p>
+              <h1 class="text-xl font-bold text-[#F5F5F2]">Rohan Mehta (Owner)</h1>
+            </div>
+            <div class="w-9 h-9 rounded-full bg-[#171719] border border-[#303034] flex items-center justify-center text-xs text-[#D4AF37] font-semibold">
+              👑
+            </div>
+          </div>
+
+          <!-- Date Range Selector -->
+          <div class="flex items-center justify-between bg-[#171719] border border-[#303034] rounded-xl px-3 py-2 text-xs">
+            <span class="text-[#B8B8BF]">Reporting Period:</span>
+            <span class="font-semibold text-[#F5F5F2] flex items-center gap-1">
+              📅 Current Month (Nov 2026) ▾
+            </span>
+          </div>
+
+          <!-- Executive Key Financial Metrics -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5">
+              <span class="text-xs text-[#B8B8BF] block">Total Collections</span>
+              <span class="text-xl font-bold text-[#F5F5F2] block mt-1">₹4,82,000</span>
+              <span class="text-[10px] text-[#34D399] mt-0.5 block">↑ 14% vs last cycle</span>
+            </div>
+            <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5">
+              <span class="text-xs text-[#B8B8BF] block">Accrued Trainer Shares</span>
+              <span class="text-xl font-bold text-[#D4AF37] block mt-1">₹2,41,000</span>
+              <span class="text-[10px] text-[#B8B8BF] mt-0.5 block">50% Average Share</span>
+            </div>
+            <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5">
+              <span class="text-xs text-[#B8B8BF] block">Active Clients</span>
+              <span class="text-xl font-bold text-[#F5F5F2] block mt-1">182</span>
+              <span class="text-[10px] text-[#34D399] mt-0.5 block">94% Retention</span>
+            </div>
+            <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5">
+              <span class="text-xs text-[#B8B8BF] block">Verified Sessions (MTD)</span>
+              <span class="text-xl font-bold text-[#F5F5F2] block mt-1">840</span>
+              <span class="text-[10px] text-[#B8B8BF] mt-0.5 block">100% OTP Verified</span>
+            </div>
+          </div>
+
+          <!-- Restrained Minimalist Chart (SVG) -->
+          <div class="bg-[#171719] border border-[#303034] rounded-2xl p-4">
+            <div class="flex justify-between items-center mb-3">
+              <h2 class="text-xs font-semibold text-[#B8B8BF] uppercase tracking-wider">Collections Trajectory (Weekly)</h2>
+              <span class="text-[11px] text-[#D4AF37] font-medium">Avg ₹1,20,500 / wk</span>
+            </div>
+            <div class="h-28 w-full flex items-end justify-between gap-3 pt-4 border-b border-[#303034] pb-2">
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <span class="text-[9px] text-[#7A7A82]">₹98k</span>
+                <div class="w-full bg-[#232327] rounded-t h-14"></div>
+                <span class="text-[10px] text-[#7A7A82]">W1</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <span class="text-[9px] text-[#7A7A82]">₹115k</span>
+                <div class="w-full bg-[#232327] rounded-t h-18"></div>
+                <span class="text-[10px] text-[#7A7A82]">W2</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <span class="text-[9px] text-[#D4AF37]">₹142k</span>
+                <div class="w-full bg-[#D4AF37] rounded-t h-24"></div>
+                <span class="text-[10px] text-[#F5F5F2] font-semibold">W3</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <span class="text-[9px] text-[#7A7A82]">₹127k</span>
+                <div class="w-full bg-[#232327] rounded-t h-20"></div>
+                <span class="text-[10px] text-[#7A7A82]">W4</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Navigation to Executive Modules -->
+          <div class="space-y-2">
+            <button onclick="navigateTo('scr_own_earnings')" class="tap-highlight w-full py-3 bg-[#1F1F23] text-[#F5F5F2] border border-[#303034] font-medium rounded-xl text-xs flex justify-between items-center px-4">
+              <span>📊 Trainer Compensation & Earnings</span>
+              <span>➔</span>
+            </button>
+            <button onclick="navigateTo('scr_own_six_month')" class="tap-highlight w-full py-3 bg-[#1F1F23] text-[#F5F5F2] border border-[#303034] font-medium rounded-xl text-xs flex justify-between items-center px-4">
+              <span>⏳ Six-Month Incentive Review</span>
+              <span>➔</span>
+            </button>
+            <button onclick="navigateTo('scr_own_staff')" class="tap-highlight w-full py-3 bg-[#1F1F23] text-[#F5F5F2] border border-[#303034] font-medium rounded-xl text-xs flex justify-between items-center px-4">
+              <span>👥 Staff & Access Governance</span>
+              <span>➔</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 29: TRAINER EARNINGS
+    // ----------------------------------------------------
+    function renderTrainerEarningsScreen() {
+      return `
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h1 class="text-lg font-bold text-[#F5F5F2]">Trainer Earnings</h1>
+            <span class="text-xs text-[#D4AF37]">Nov 2026 Cycle</span>
+          </div>
+
+          <div class="space-y-2.5">
+            ${[
+              { name: 'Kabir Roy', eligible: 96000, share: 48000, rate: '50%', clients: 8 },
+              { name: 'Sneha Rao', eligible: 72000, share: 36000, rate: '50%', clients: 6 },
+              { name: 'Vikram Malhotra', eligible: 110000, share: 55000, rate: '50%', clients: 12 },
+              { name: 'Aditi Nair', eligible: 48000, share: 24000, rate: '50%', clients: 5 }
+            ].map(t => `
+              <div onclick="navigateTo('scr_own_earnings_detail')" class="tap-highlight bg-[#171719] border border-[#303034] rounded-xl p-3.5 cursor-pointer hover:border-[#45454B] space-y-2">
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-[#232327] border border-[#303034] flex items-center justify-center font-bold text-xs text-[#D4AF37]">
+                      ${t.name.split(' ').map(n=>n[0]).join('')}
+                    </div>
+                    <div>
+                      <h3 class="text-sm font-semibold text-[#F5F5F2]">${t.name}</h3>
+                      <p class="text-[11px] text-[#B8B8BF]">${t.clients} Clients &bull; Rate: <span class="text-[#D4AF37] font-semibold">${t.rate}</span></p>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <span class="text-sm font-bold text-[#D4AF37]">₹${t.share.toLocaleString('en-IN')}</span>
+                    <span class="block text-[10px] text-[#7A7A82]">Accrued Share</span>
+                  </div>
+                </div>
+                <div class="pt-2 border-t border-[#26262B] flex justify-between text-xs text-[#7A7A82]">
+                  <span>Eligible Collections: ₹${t.eligible.toLocaleString('en-IN')}</span>
+                  <span class="text-[#D4AF37]">View Breakdown ➔</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 30: TRAINER EARNINGS DETAIL
+    // ----------------------------------------------------
+    function renderTrainerEarningsDetailScreen() {
+      return `
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <button onclick="navigateTo('scr_own_earnings')" class="text-xs text-[#B8B8BF] flex items-center gap-1">
+              ← Earnings Roster
+            </button>
+            <span class="text-xs text-[#D4AF37]">Kabir Roy</span>
+          </div>
+
+          <!-- Total Summary Card -->
+          <div class="bg-[#171719] border border-[#303034] rounded-2xl p-4 text-center">
+            <span class="text-xs text-[#B8B8BF]">Accrued Trainer Share</span>
+            <h1 class="text-2xl font-bold text-[#D4AF37] my-1">₹48,000.00</h1>
+            <p class="text-xs text-[#B8B8BF]">From ₹96,000 eligible collections @ 50% baseline rate</p>
+          </div>
+
+          <!-- Payment-by-Payment Breakdown -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-xs font-semibold text-[#B8B8BF] uppercase tracking-wider">Payment Breakdown (Snapshot Audit)</h2>
+              <button onclick="navigateTo('scr_own_pct_history')" class="text-xs text-[#D4AF37] hover:underline">Rate History</button>
+            </div>
+
+            <div class="space-y-2">
+              ${[
+                { client: 'Dev Sharma', date: '08 Nov 2026', total: 18000, rate: '50%', share: 9000 },
+                { client: 'Karan Singhania', date: '05 Nov 2026', total: 18000, rate: '50%', share: 9000 },
+                { client: 'Sahil Kapoor', date: '02 Nov 2026', total: 30000, rate: '50%', share: 15000 },
+                { client: 'Tarun Varma', date: '01 Nov 2026', total: 30000, rate: '50%', share: 15000 }
+              ].map(p => `
+                <div class="bg-[#171719] border border-[#303034] rounded-xl p-3 text-xs space-y-1.5">
+                  <div class="flex justify-between items-center">
+                    <span class="font-semibold text-[#F5F5F2]">${p.client}</span>
+                    <span class="font-bold text-[#D4AF37]">₹${p.share.toLocaleString('en-IN')}</span>
+                  </div>
+                  <div class="flex justify-between text-[#7A7A82] text-[11px]">
+                    <span>${p.date} &bull; Collected: ₹${p.total.toLocaleString('en-IN')}</span>
+                    <span>Applied Rate: ${p.rate}</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="p-3 bg-[#0B0B0C] border border-[#303034] rounded-xl text-xs text-[#B8B8BF]">
+            <span>Historical payments retain their 50% snapshot rate permanently even if future percentage is adjusted during 6-month review.</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 31: SIX-MONTH REVIEW
+    // ----------------------------------------------------
+    function renderSixMonthReviewScreen() {
+      return `
+        <div class="p-5 flex-1 flex flex-col justify-between">
+          <div>
+            <button onclick="navigateTo('scr_own_overview')" class="text-xs text-[#B8B8BF] mb-3 flex items-center gap-1">
+              ← Back
+            </button>
+            <h1 class="text-xl font-bold text-[#F5F5F2]">Six-Month Incentive Review</h1>
+            <p class="text-xs text-[#B8B8BF] mt-0.5">Trainer: <strong class="text-[#F5F5F2]">Kabir Roy</strong> &bull; Period: 01 Jun – 30 Nov 2026</p>
+
+            <div class="bg-[#171719] border border-[#303034] rounded-2xl p-4 my-4 space-y-3">
+              <div class="flex justify-between text-xs">
+                <span class="text-[#B8B8BF]">6-Month Eligible Collections:</span>
+                <span class="font-semibold text-[#F5F5F2]">₹5,40,000 INR</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-[#B8B8BF]">Total Verified Client Sessions:</span>
+                <span class="font-semibold text-[#F5F5F2]">312 Sessions</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-[#B8B8BF]">Accrued Baseline Share (50%):</span>
+                <span class="font-bold text-[#D4AF37]">₹2,70,000 INR</span>
+              </div>
+              <div class="flex justify-between text-xs border-t border-[#26262B] pt-2">
+                <span class="text-[#B8B8BF]">Current Share Percentage:</span>
+                <span class="font-bold text-[#F5F5F2]">50%</span>
+              </div>
+            </div>
+
+            <!-- Review Configuration -->
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs font-medium text-[#B8B8BF] mb-1">Proposed New Percentage (Manual Evaluation)</label>
+                <div class="flex gap-2">
+                  <input type="number" value="55" class="w-24 px-3 py-2 bg-[#171719] border border-[#303034] rounded-xl text-sm font-bold text-[#D4AF37] text-center">
+                  <span class="py-2 text-sm text-[#F5F5F2] font-semibold">%</span>
+                  <span class="text-xs text-[#7A7A82] self-center ml-2">Baseline 50% + 5% Merit Incentive</span>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-medium text-[#B8B8BF] mb-1">Effective Date of Adjustment</label>
+                <input type="text" value="01 December 2026" class="w-full px-3 py-2 bg-[#171719] border border-[#303034] rounded-xl text-xs text-[#F5F5F2]">
+              </div>
+
+              <div>
+                <label class="block text-xs font-medium text-[#B8B8BF] mb-1">Review Evaluation Notes</label>
+                <textarea class="w-full px-3 py-2 bg-[#171719] border border-[#303034] rounded-xl text-xs text-[#F5F5F2] h-16 resize-none">Consistently high client retention and 100% verified attendance punctuality. Approved +5% incentive hike for next half-year.</textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4">
+            <button onclick="navigateTo('scr_own_pct_history'); alert('Incentive percentage adjustment approved. Effective 01 Dec 2026.')" class="tap-highlight w-full py-3.5 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-xl text-xs shadow-md">
+              Approve Percentage Adjustment
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 32: PERCENTAGE HISTORY & SNAPSHOT
+    // ----------------------------------------------------
+    function renderPercentageHistoryScreen() {
+      return `
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <button onclick="navigateTo('scr_own_overview')" class="text-xs text-[#B8B8BF] flex items-center gap-1">
+              ← Overview
+            </button>
+            <span class="text-xs text-[#D4AF37]">Rate Audit Trail</span>
+          </div>
+
+          <h1 class="text-lg font-bold text-[#F5F5F2]">Incentive Rate History</h1>
+
+          <div class="space-y-3">
+            <div class="bg-[#171719] border-l-4 border-[#34D399] border-t border-r border-b border-[#303034] rounded-xl p-3.5 space-y-1">
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-bold text-[#F5F5F2]">55% (Approved Future Rate)</span>
+                <span class="text-[10px] text-[#34D399] bg-[#064E3B]/40 px-2 py-0.5 rounded">Upcoming</span>
+              </div>
+              <p class="text-xs text-[#B8B8BF]">Effective: 01 Dec 2026 – Ongoing</p>
+              <p class="text-[11px] text-[#7A7A82]">Approved by: Rohan Mehta (Owner) &bull; 6-Month Merit Review</p>
+            </div>
+
+            <div class="bg-[#171719] border-l-4 border-[#D4AF37] border-t border-r border-b border-[#303034] rounded-xl p-3.5 space-y-1">
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-bold text-[#F5F5F2]">50% (Active Current Rate)</span>
+                <span class="text-[10px] text-[#D4AF37] bg-[#1F1F23] px-2 py-0.5 rounded">Active</span>
+              </div>
+              <p class="text-xs text-[#B8B8BF]">Effective: 01 Jun 2026 – 30 Nov 2026</p>
+              <p class="text-[11px] text-[#7A7A82]">Standard Baseline Contract Rate</p>
+            </div>
+          </div>
+
+          <div class="p-3.5 bg-[#0B0B0C] border border-[#303034] rounded-xl text-xs text-[#B8B8BF]">
+            <p class="font-semibold text-[#F5F5F2] mb-1">🔒 Historical Snapshot Integrity</p>
+            <p class="text-[11px]">When an incentive percentage is updated, previous payments are <strong>never</strong> recalculated. Each payment permanently preserves the snapshot percentage active on its creation date.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 33: STAFF & ACCESS
+    // ----------------------------------------------------
+    function renderStaffAccessScreen() {
+      return `
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h1 class="text-lg font-bold text-[#F5F5F2]">Staff Governance</h1>
+            <span class="text-xs text-[#B8B8BF]">4 Active Accounts</span>
+          </div>
+
+          <div class="space-y-2.5">
+            ${[
+              { name: 'Priya Patel', role: 'Front Desk', status: 'Active', scope: 'Client Registration, Payments' },
+              { name: 'Arjun Verma', role: 'Master Trainer', status: 'Active', scope: 'Client Allocations, Queue' },
+              { name: 'Kabir Roy', role: 'Trainer', status: 'Active', scope: 'Daily Session OTPs, My Clients' },
+              { name: 'Rohan Mehta', role: 'Owner / Administrator', status: 'Active', scope: 'Executive Oversight, Rates' }
+            ].map(s => `
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5 space-y-1.5">
+                <div class="flex justify-between items-center">
+                  <h3 class="text-sm font-semibold text-[#F5F5F2]">${s.name}</h3>
+                  <span class="px-2 py-0.5 rounded text-[10px] bg-[#1F1F23] text-[#D4AF37] border border-[#303034] font-medium">${s.role}</span>
+                </div>
+                <p class="text-xs text-[#B8B8BF]">${s.scope}</p>
+                <div class="pt-1.5 border-t border-[#26262B] flex justify-between items-center text-xs">
+                  <span class="text-[#34D399]">● ${s.status}</span>
+                  <span class="text-[10px] text-[#7A7A82]">Account Managed by Admin</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 34: MEMBERSHIP CONFIGURATION
+    // ----------------------------------------------------
+    function renderMembershipConfigScreen() {
+      return `
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h1 class="text-lg font-bold text-[#F5F5F2]">Membership Catalogue</h1>
+            <span class="text-xs text-[#D4AF37]">Configuration</span>
+          </div>
+
+          <div class="space-y-2.5">
+            ${[
+              { name: 'Quarterly Gold', duration: '3 Months', price: 18000, status: 'Active' },
+              { name: 'Annual Platinum VIP', duration: '12 Months', price: 60000, status: 'Active' },
+              { name: 'Monthly Core', duration: '1 Month', price: 7500, status: 'Active' },
+              { name: 'Half-Yearly Elite', duration: '6 Months', price: 32000, status: 'Active' }
+            ].map(m => `
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5 flex justify-between items-center">
+                <div>
+                  <h3 class="text-sm font-semibold text-[#F5F5F2]">${m.name}</h3>
+                  <p class="text-[11px] text-[#B8B8BF]">${m.duration} &bull; Standard Base</p>
+                </div>
+                <div class="text-right">
+                  <span class="text-sm font-bold text-[#D4AF37]">₹${m.price.toLocaleString('en-IN')}</span>
+                  <span class="block text-[10px] text-[#34D399]">● ${m.status}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="p-3.5 bg-[#0B0B0C] border border-[#303034] rounded-xl text-xs text-[#B8B8BF]">
+            <span>Note: Standard catalogue prices are default. Client-specific agreed prices may only be edited during registration by an authorized Administrator account.</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 35: AUDIT ACTIVITY LOG
+    // ----------------------------------------------------
+    function renderAuditActivityScreen() {
+      return `
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h1 class="text-lg font-bold text-[#F5F5F2]">System Audit Trail</h1>
+            <span class="text-xs text-[#B8B8BF]">Immutable Log</span>
+          </div>
+
+          <div class="space-y-2">
+            ${[
+              { actor: 'Priya Patel (FD)', action: 'Recorded Payment #PAY-9921', target: 'Client Dev Sharma (₹18,000)', time: '08 Nov, 11:22 AM' },
+              { actor: 'Kabir Roy (TR)', action: 'Verified Session #SES-8901', target: 'Client Dev Sharma (OTP Confirmed)', time: '08 Nov, 11:15 AM' },
+              { actor: 'Arjun Verma (MT)', action: 'Assigned Trainer', target: 'Dev Sharma → Kabir Roy', time: '08 Nov, 10:15 AM' },
+              { actor: 'Priya Patel (FD)', action: 'Client Enrolled & OTP Verified', target: 'Dev Sharma (+91 98765•••••)', time: '08 Nov, 10:14 AM' },
+              { actor: 'Rohan Mehta (Owner)', action: 'Approved Rate Adjustment', target: 'Kabir Roy (50% → 55% eff. Dec)', time: '07 Nov, 04:30 PM' }
+            ].map(a => `
+              <div class="bg-[#171719] border border-[#303034] rounded-xl p-3 text-xs space-y-1">
+                <div class="flex justify-between items-center">
+                  <span class="font-semibold text-[#F5F5F2]">${a.action}</span>
+                  <span class="text-[10px] text-[#7A7A82] font-mono">${a.time}</span>
+                </div>
+                <p class="text-[11px] text-[#D4AF37]">${a.target}</p>
+                <p class="text-[10px] text-[#7A7A82]">Actor: ${a.actor}</p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SCREEN 3: ACCOUNT & MORE
+    // ----------------------------------------------------
+    function renderAccountMoreScreen() {
+      return `
+        <div class="p-5 space-y-4">
+          <h1 class="text-lg font-bold text-[#F5F5F2]">Account & Facility</h1>
+
+          <!-- User Card -->
+          <div class="bg-[#171719] border border-[#303034] rounded-2xl p-4 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-[#232327] border border-[#303034] flex items-center justify-center font-bold text-sm text-[#D4AF37]">
+              PP
+            </div>
+            <div>
+              <h2 class="text-sm font-bold text-[#F5F5F2]">Priya Patel</h2>
+              <p class="text-xs text-[#B8B8BF]">Front Desk Operational Staff</p>
+              <span class="text-[10px] text-[#34D399]">● Terminal Connected</span>
+            </div>
+          </div>
+
+          <!-- Navigation Menu -->
+          <div class="bg-[#171719] border border-[#303034] rounded-2xl overflow-hidden divide-y divide-[#26262B] text-xs">
+            <button onclick="navigateTo('scr_client_directory')" class="w-full p-3.5 text-left flex justify-between items-center text-[#F5F5F2] hover:bg-[#232327]">
+              <span>Client Directory & Membership Lookup</span>
+              <span>➔</span>
+            </button>
+            <button onclick="navigateTo('scr_pay_list')" class="w-full p-3.5 text-left flex justify-between items-center text-[#F5F5F2] hover:bg-[#232327]">
+              <span>Payment Collection Registry</span>
+              <span>➔</span>
+            </button>
+            <button onclick="navigateTo('scr_own_audit')" class="w-full p-3.5 text-left flex justify-between items-center text-[#F5F5F2] hover:bg-[#232327]">
+              <span>Audit Activity Log</span>
+              <span>➔</span>
+            </button>
+            <button onclick="navigateTo('scr_components')" class="w-full p-3.5 text-left flex justify-between items-center text-[#D4AF37] hover:bg-[#232327]">
+              <span>🧩 Design System & Component Showroom</span>
+              <span>➔</span>
+            </button>
+            <button onclick="alert('Vyomi Technical Support Desk: 1800-VYOMI-CARE')" class="w-full p-3.5 text-left flex justify-between items-center text-[#F5F5F2] hover:bg-[#232327]">
+              <span>Operational & Terminal Support</span>
+              <span>➔</span>
+            </button>
+          </div>
+
+          <div class="pt-4 space-y-2">
+            <button onclick="navigateTo('scr_signin')" class="tap-highlight w-full py-3 bg-[#171719] text-[#F87171] border border-[#F87171]/30 font-medium rounded-xl text-xs">
+              Sign Out of Terminal
+            </button>
+            <p class="text-center text-[11px] text-[#7A7A82]">Vyomi Club Management &bull; Android Build v1.2.0-prod</p>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // PROPOSED FEATURES SCREEN (SEGREGATED)
+    // ----------------------------------------------------
+    function renderProposedFeaturesScreen() {
+      return `
+        <div class="p-5 space-y-4">
+          <div class="border-b border-[#303034] pb-3">
+            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#78350F]/40 text-[#FBBF24] border border-[#FBBF24]/30 uppercase tracking-wider">Proposed — Requires Confirmation</span>
+            <h1 class="text-lg font-bold text-[#F5F5F2] mt-1.5">Unapproved Feature Proposals</h1>
+            <p class="text-xs text-[#B8B8BF] mt-0.5">Kept separate from approved core specifications as requested.</p>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <!-- Proposal 1 -->
+            <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5 space-y-1.5">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-[#F5F5F2]">1. Membership Renewal & Freeze Flows</span>
+                <span class="text-[10px] text-[#FBBF24]">Needs Policy</span>
+              </div>
+              <p class="text-[#B8B8BF]">Allowing clients to freeze memberships for travel or medical reasons and renew without re-registering.</p>
+            </div>
+
+            <!-- Proposal 2 -->
+            <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5 space-y-1.5">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-[#F5F5F2]">2. Trainer Payout Tracking</span>
+                <span class="text-[10px] text-[#FBBF24]">Accounting Only</span>
+              </div>
+              <p class="text-[#B8B8BF]">Logging bank transfers or payouts actually made to trainers against their accrued shares.</p>
+            </div>
+
+            <!-- Proposal 3 -->
+            <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5 space-y-1.5">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-[#F5F5F2]">3. Refund & Partial-Payment Management</span>
+                <span class="text-[10px] text-[#FBBF24]">Clawback Rules</span>
+              </div>
+              <p class="text-[#B8B8BF]">Managing installment payments and handling trainer share clawbacks when a refund occurs.</p>
+            </div>
+
+            <!-- Proposal 4 -->
+            <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5 space-y-1.5">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-[#F5F5F2]">4. Website Trial Enquiry Import</span>
+                <span class="text-[10px] text-[#FBBF24]">Integration</span>
+              </div>
+              <p class="text-[#B8B8BF]">Direct sync of online luxury trial requests into the front-desk walk-in queue.</p>
+            </div>
+
+            <!-- Proposal 5 -->
+            <div class="bg-[#171719] border border-[#303034] rounded-xl p-3.5 space-y-1.5">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-[#F5F5F2]">5. Financial & Attendance Report Export</span>
+                <span class="text-[10px] text-[#FBBF24]">CSV / PDF</span>
+              </div>
+              <p class="text-[#B8B8BF]">One-click export of monthly trainer share statements and session verification audit trails.</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // REUSABLE DESIGN SYSTEM SHOWROOM SCREEN
+    // ----------------------------------------------------
+    function renderDesignSystemShowroomScreen() {
+      return `
+        <div class="p-5 space-y-5">
+          <div class="border-b border-[#303034] pb-3">
+            <span class="text-xs text-[#D4AF37] uppercase tracking-wider font-semibold">Component Library</span>
+            <h1 class="text-lg font-bold text-[#F5F5F2] mt-0.5">Reusable Android Design Tokens</h1>
+            <p class="text-xs text-[#B8B8BF]">Tested against Android 48dp touch targets and dark luxury tokens.</p>
+          </div>
+
+          <!-- Color Tokens -->
+          <div>
+            <h2 class="text-xs font-semibold text-[#B8B8BF] uppercase tracking-wider mb-2">1. Semantic Color Swatches</h2>
+            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
+              <div class="p-2.5 rounded-lg bg-[#0B0B0C] border border-[#303034] flex items-center justify-between">
+                <span>Background</span>
+                <span class="text-[#B8B8BF]">#0B0B0C</span>
+              </div>
+              <div class="p-2.5 rounded-lg bg-[#171719] border border-[#303034] flex items-center justify-between">
+                <span>Elevated Surface</span>
+                <span class="text-[#B8B8BF]">#171719</span>
+              </div>
+              <div class="p-2.5 rounded-lg bg-[#F5F5F2] text-[#0B0B0C] font-semibold flex items-center justify-between">
+                <span>Ivory Action</span>
+                <span>#F5F5F2</span>
+              </div>
+              <div class="p-2.5 rounded-lg bg-[#171719] border border-[#D4AF37] text-[#D4AF37] flex items-center justify-between">
+                <span>Champagne</span>
+                <span>#D4AF37</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div>
+            <h2 class="text-xs font-semibold text-[#B8B8BF] uppercase tracking-wider mb-2">2. Button Components (&ge;48dp targets)</h2>
+            <div class="space-y-2">
+              <button class="w-full py-3.5 bg-[#F5F5F2] text-[#0B0B0C] font-semibold rounded-xl text-xs">
+                Primary Action (Ivory Surface + Dark Text)
+              </button>
+              <button class="w-full py-3 bg-[#171719] text-[#F5F5F2] border border-[#303034] font-medium rounded-xl text-xs">
+                Secondary Action (Elevated Dark Surface)
+              </button>
+              <button class="w-full py-3 bg-[#171719] text-[#F87171] border border-[#F87171]/40 font-medium rounded-xl text-xs">
+                Destructive Action (Semantic Red)
+              </button>
+              <button disabled class="w-full py-3 bg-[#171719] text-[#7A7A82] border border-[#26262B] font-medium rounded-xl text-xs cursor-not-allowed opacity-60">
+                Disabled State
+              </button>
+            </div>
+          </div>
+
+          <!-- Status Chips -->
+          <div>
+            <h2 class="text-xs font-semibold text-[#B8B8BF] uppercase tracking-wider mb-2">3. Multi-Modal Status Chips (Color + Icon + Label)</h2>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <span class="px-2.5 py-1 rounded-full font-medium bg-[#064E3B]/40 text-[#34D399] border border-[#34D399]/30">
+                ● Verified
+              </span>
+              <span class="px-2.5 py-1 rounded-full font-medium bg-[#78350F]/40 text-[#FBBF24] border border-[#FBBF24]/30">
+                ⏳ Pending OTP
+              </span>
+              <span class="px-2.5 py-1 rounded-full font-medium bg-[#7F1D1D]/40 text-[#F87171] border border-[#F87171]/30">
+                ⚠ Overdue
+              </span>
+              <span class="px-2.5 py-1 rounded-full font-medium bg-[#1F1F23] text-[#B8B8BF] border border-[#303034]">
+                🔒 Locked Record
+              </span>
+            </div>
+          </div>
+
+          <!-- Form Inputs -->
+          <div>
+            <h2 class="text-xs font-semibold text-[#B8B8BF] uppercase tracking-wider mb-2">4. Accessible Form Inputs</h2>
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs font-medium text-[#B8B8BF] mb-1">Standard Text Field</label>
+                <input type="text" value="Active input text" class="w-full px-3.5 py-2.5 bg-[#171719] border border-[#303034] rounded-xl text-xs text-[#F5F5F2]">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-[#F87171] mb-1">Error State with Inline Feedback</label>
+                <input type="text" value="Invalid Phone Number" class="w-full px-3.5 py-2.5 bg-[#171719] border border-[#F87171] rounded-xl text-xs text-[#F87171]">
+                <span class="text-[11px] text-[#F87171] mt-1 block">Phone number must be exactly 10 digits.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // SKELETON LOADER STATE SIMULATION
+    // ----------------------------------------------------
+    function renderSkeletonScreen() {
+      return `
+        <div class="p-5 space-y-4 animate-pulse">
+          <div class="flex justify-between items-center">
+            <div class="h-6 w-32 bg-[#232327] rounded"></div>
+            <div class="h-8 w-8 bg-[#232327] rounded-full"></div>
+          </div>
+          <div class="h-16 w-full bg-[#1F1F23] rounded-2xl"></div>
+          <div class="grid grid-cols-3 gap-2">
+            <div class="h-16 bg-[#171719] rounded-xl"></div>
+            <div class="h-16 bg-[#171719] rounded-xl"></div>
+            <div class="h-16 bg-[#171719] rounded-xl"></div>
+          </div>
+          <div class="space-y-2 pt-2">
+            <div class="h-14 bg-[#171719] rounded-xl"></div>
+            <div class="h-14 bg-[#171719] rounded-xl"></div>
+            <div class="h-14 bg-[#171719] rounded-xl"></div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ----------------------------------------------------
+    // ERROR STATE SCREEN SIMULATION
+    // ----------------------------------------------------
+    function renderErrorStateScreen() {
+      return `
+        <div class="p-6 flex-1 flex flex-col items-center justify-center text-center">
+          <div class="w-14 h-14 rounded-full bg-[#7F1D1D]/40 border border-[#F87171] text-[#F87171] flex items-center justify-center text-2xl mb-4">
+            ⚠
+          </div>
+          <h2 class="text-base font-bold text-[#F5F5F2]">Connectivity Interrupted</h2>
+          <p class="text-xs text-[#B8B8BF] max-w-xs mt-1 mb-5">Unable to establish secure handshake with the Vyomi club registry database.</p>
+          <button onclick="toggleSimulationState('normal')" class="px-5 py-2.5 bg-[#F5F5F2] text-[#0B0B0C] rounded-xl text-xs font-semibold">
+            Retry Connection
+          </button>
+        </div>
+      `;
+    }
+
+    // Initialize clock ticker
+    setInterval(() => {
+      const now = new Date();
+      const hrs = now.getHours().toString().padStart(2, '0');
+      const mins = now.getMinutes().toString().padStart(2, '0');
+      const el = document.getElementById('android-clock');
+      if (el) el.innerText = `${hrs}:${mins}`;
+    }, 1000);
+
+    // Initial render
+    setRole('frontdesk');
+  </script>
+</body>
+</html>
